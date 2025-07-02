@@ -2,7 +2,9 @@
 
 ApplicationSettings settings = new()
 {
-    Password = "this!sn0tTHePassword"
+    DatabaseFileLocation = Environment.CurrentDirectory,
+    DatabaseFileName = "TopSecret.db"
 };
 
-Console.WriteLine($"TopSecret password: {settings.Password}");
+Console.WriteLine($@"TopSecret database file: {settings.DatabaseFileLocation}\{settings.DatabaseFileName}");
+

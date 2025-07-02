@@ -2,5 +2,6 @@
 
 public class ApplicationSettings
 {
-    public string? Password { get; set; }
+    public string? DatabaseFileLocation { get; set; }
+    public string? DatabaseFileName { get; set; }
 }
