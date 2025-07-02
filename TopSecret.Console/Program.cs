@@ -1,2 +1,8 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using TopSecret.Common.Models;
+
+ApplicationSettings settings = new()
+{
+    Password = "this!sn0tTHePassword"
+};
+
+Console.WriteLine($"TopSecret password: {settings.Password}");
