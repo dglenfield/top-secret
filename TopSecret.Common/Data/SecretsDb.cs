@@ -10,7 +10,7 @@ public class SecretsDb
     
     public string FullDatabaseFilePath => Path.IsPathRooted(DatabaseFileName) ? DatabaseFileName : Path.Combine(DatabaseFileLocation, DatabaseFileName);
     public string FullLogFilePath => Path.Combine(DatabaseFileLocation, "secretsdb-errors.log");
-
+    
     private readonly string _connectionString;
     private readonly FileLogger _logger;
     
@@ -42,11 +42,6 @@ public class SecretsDb
     /// whitespace).</exception>
     public async Task CreateAsync()
     {
-        if (string.IsNullOrWhiteSpace(DatabaseFileLocation) || string.IsNullOrWhiteSpace(DatabaseFileName))
-        {
-            throw new ArgumentException("Database file location and name must be provided.");
-        }
-        
         if (!Directory.Exists(DatabaseFileLocation))
         {
             Directory.CreateDirectory(DatabaseFileLocation);

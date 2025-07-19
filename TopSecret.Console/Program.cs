@@ -1,34 +1,44 @@
 ﻿using TopSecret.Common.Data;
 using TopSecret.Common.Models;
 
-ApplicationSettings settings = new()
-{
-    //DatabaseFileLocation = Environment.CurrentDirectory,
-    DatabaseFileLocation = @"c:\temp2",
-    DatabaseFileName = "TopSecret.db"
-    //DatabaseFileName = @"test\TopSecret.db"
-};
-
-//string settingsPath = @"c:\temp2\appsettings.json";
 string settingsPath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
 
 // Save settings
-await settings.SaveSettingsAsync(settingsPath);
+try
+{
+    ApplicationSettings settings = new()
+    {
+        DatabaseFileLocation = @"c:\temp2",
+        DatabaseFileName = "TopSecret.db"
+    };
+
+    await settings.SaveSettingsAsync(settingsPath);
+}
+catch (DirectoryNotFoundException ex)
+{
+    WriteError(ex.Message);
+    return;
+}
 
 // Load settings
-//settingsPath = @"c:\temp2\appsettings2.json";
-ApplicationSettings? loadedSettings = await ApplicationSettings.LoadSettingsAsync(settingsPath);
+ApplicationSettings? loadedSettings;
+try
+{
+    loadedSettings = await ApplicationSettings.LoadSettingsAsync(settingsPath);
+}
+catch (FileNotFoundException ex)
+{
+    WriteError(ex.Message);
+    return;
+}
 
-if (loadedSettings == null || 
-    string.IsNullOrWhiteSpace(loadedSettings.DatabaseFileLocation) || 
-    string.IsNullOrWhiteSpace(loadedSettings.DatabaseFileName))
+if (loadedSettings == null)
 {
     WriteError("Failed to load application settings.");
     return;
 }
 
 SecretsDb secretsDb = new(loadedSettings.DatabaseFileLocation, loadedSettings.DatabaseFileName);
-//SecretsDb secretsDb = new("", "");
 WriteInfo($"TopSecret database file: {secretsDb.FullDatabaseFilePath}");
 
 try
@@ -38,6 +48,7 @@ try
 catch (Exception ex)
 {
     WriteError($"\n** ERROR CREATING DATABASE: {ex.Message} **");
+    return;
 }
 
 await secretsDb.GetUsersAsync();
