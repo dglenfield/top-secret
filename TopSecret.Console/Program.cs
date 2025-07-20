@@ -12,7 +12,7 @@ try
         DatabaseFileName = "TopSecret.db"
     };
 
-    await settings.SaveSettingsAsync(settingsPath);
+    await settings.SaveAsync(settingsPath);
 }
 catch (DirectoryNotFoundException ex)
 {
@@ -24,7 +24,7 @@ catch (DirectoryNotFoundException ex)
 ApplicationSettings? loadedSettings;
 try
 {
-    loadedSettings = await ApplicationSettings.LoadSettingsAsync(settingsPath);
+    loadedSettings = await ApplicationSettings.LoadAsync(settingsPath);
 }
 catch (FileNotFoundException ex)
 {
