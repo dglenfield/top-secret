@@ -12,21 +12,19 @@ public partial class SetupForm : Form
         txtFolderPath.Text = AppContext.BaseDirectory;
     }
 
-    private void btnSelectFolder_Click(object sender, EventArgs e)
-    {
-        using FolderBrowserDialog folderDialog = new() 
-        {
-            Description = "Select a folder to save the database file",
-            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-            UseDescriptionForTitle = true
-        };
-
-        if (folderDialog.ShowDialog() == DialogResult.OK)
-        {
-            txtFolderPath.Text = folderDialog.SelectedPath;
-        }
-    }
-
+    /// <summary>
+    /// Handles the click event for the "Create Database File" button, prompting the user to confirm the creation of a
+    /// database file and saving the application settings.
+    /// </summary>
+    /// <remarks>This method performs the following actions: <list type="bullet"> <item>
+    /// <description>Validates the input for the database file name and prompts the user to confirm the file
+    /// creation.</description> </item> <item> <description>Saves the application settings to a configuration
+    /// file.</description> </item> <item> <description>Creates a new database file at the specified
+    /// location.</description> </item> <item> <description>Updates the parent form's settings and controls if
+    /// applicable.</description> </item> </list> If any errors occur during the saving of settings or database
+    /// creation, an error message is displayed to the user.</remarks>
+    /// <param name="sender">The source of the event, typically the button that was clicked.</param>
+    /// <param name="e">The event data associated with the click event.</param>
     private void btnCreateDatabaseFile_Click(object sender, EventArgs e)
     {
         if (string.IsNullOrWhiteSpace(txtFileName.Text))
@@ -84,16 +82,43 @@ public partial class SetupForm : Form
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                MessageBox.Show("Database created successfully.", "Success", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                this.Close();
             });
         }
         catch (Exception ex)
         {
             MessageBox.Show($"** ERROR CREATING DATABASE: {ex.Message} **", "Error", 
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+
+        if (Owner is MainForm mainForm)
+        {
+            mainForm.Settings = settings;
+            mainForm.UpdateSettingsControls();
+        }
+
+        this.Close();
+    }
+
+    /// <summary>
+    /// Handles the click event for the "Select Folder" button, allowing the user to choose a folder.
+    /// </summary>
+    /// <remarks>Opens a folder browser dialog for the user to select a folder. If a folder is selected,  the
+    /// selected path is displayed in the associated text box.</remarks>
+    /// <param name="sender">The source of the event, typically the button that was clicked.</param>
+    /// <param name="e">An <see cref="EventArgs"/> instance containing the event data.</param>
+    private void btnSelectFolder_Click(object sender, EventArgs e)
+    {
+        using FolderBrowserDialog folderDialog = new()
+        {
+            Description = "Select a folder to save the database file",
+            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            UseDescriptionForTitle = true
+        };
+
+        if (folderDialog.ShowDialog() == DialogResult.OK)
+        {
+            txtFolderPath.Text = folderDialog.SelectedPath;
         }
     }
 }
