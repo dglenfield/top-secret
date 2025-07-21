@@ -73,7 +73,20 @@ public class SecretsDb
             CREATE TABLE IF NOT EXISTS dbInfo (
                 version TEXT NOT NULL
             );
-            INSERT INTO dbInfo (version) VALUES ('0.1')
+            INSERT INTO dbInfo (version) VALUES ('0.2');
+        ";
+        command.ExecuteNonQueryAsync().Wait();
+
+        command.CommandText = @"
+            CREATE TABLE IF NOT EXISTS secrets (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                createdOn TEXT NOT NULL DEFAULT (datetime('now')),
+                description TEXT,
+                notes TEXT,
+                password TEXT,
+                updatedOn TEXT,
+                username TEXT
+            );
         ";
         command.ExecuteNonQueryAsync().Wait();
     }
