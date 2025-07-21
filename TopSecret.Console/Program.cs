@@ -51,8 +51,6 @@ catch (Exception ex)
     return;
 }
 
-await secretsDb.GetUsersAsync();
-
 try
 {
     await secretsDb.DeleteAsync();

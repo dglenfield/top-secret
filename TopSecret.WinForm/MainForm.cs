@@ -1,14 +1,33 @@
-﻿using TopSecret.Common.Models;
+﻿using TopSecret.Common.Data;
+using TopSecret.Common.Models;
 
 namespace TopSecret.WinForm;
 
 public partial class MainForm : Form
 {
     public ApplicationSettings? Settings { get; set; }
+    public DatabaseInfo? DatabaseInfo { get; set; }
 
     public MainForm()
     {
         InitializeComponent();
+    }
+
+    /// <summary>
+    /// Updates the database information controls with the current database version.
+    /// </summary>
+    /// <remarks>If the <see cref="DatabaseInfo"/> property is not null, the version information  is displayed
+    /// in the associated text control. Otherwise, the text control is cleared.</remarks>
+    public void UpdateDatabaseInfoControls()
+    {
+        if (DatabaseInfo != null)
+        {
+            txtVersion.Text = DatabaseInfo.Version.ToString();
+        }
+        else
+        {
+            txtVersion.Text = string.Empty;
+        }
     }
 
     /// <summary>
@@ -61,6 +80,21 @@ public partial class MainForm : Form
         {
             MessageBox.Show($"Settings file not found: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
+        }
+
+        if (Settings != null)
+        {
+            SecretsDb secretsDb = new(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
+            try
+            {
+                DatabaseInfo = await secretsDb.GetDatabaseInfoAsync();
+                UpdateDatabaseInfoControls();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not load database info: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
         }
     }
 }

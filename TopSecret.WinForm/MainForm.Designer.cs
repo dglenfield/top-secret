@@ -32,6 +32,8 @@
             label2 = new Label();
             txtFileLocation = new TextBox();
             txtFileName = new TextBox();
+            txtVersion = new TextBox();
+            label3 = new Label();
             SuspendLayout();
             // 
             // label1
@@ -46,7 +48,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(20, 59);
+            label2.Location = new Point(31, 59);
             label2.Name = "label2";
             label2.Size = new Size(111, 15);
             label2.TabIndex = 1;
@@ -66,11 +68,29 @@
             txtFileName.Size = new Size(235, 23);
             txtFileName.TabIndex = 3;
             // 
+            // txtVersion
+            // 
+            txtVersion.Location = new Point(148, 95);
+            txtVersion.Name = "txtVersion";
+            txtVersion.Size = new Size(100, 23);
+            txtVersion.TabIndex = 4;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(46, 98);
+            label3.Name = "label3";
+            label3.Size = new Size(96, 15);
+            label3.TabIndex = 5;
+            label3.Text = "Database Version";
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(label3);
+            Controls.Add(txtVersion);
             Controls.Add(txtFileName);
             Controls.Add(txtFileLocation);
             Controls.Add(label2);
@@ -87,5 +107,7 @@
         private Label label2;
         private TextBox txtFileLocation;
         private TextBox txtFileName;
+        private TextBox txtVersion;
+        private Label label3;
     }
 }

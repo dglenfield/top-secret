@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using TopSecret.Common.Logging;
+using TopSecret.Common.Models;
 
 namespace TopSecret.Common.Data;
 
@@ -31,15 +32,13 @@ public class SecretsDb
     }
 
     /// <summary>
-    /// Creates a new SQLite database file and initializes it with a default schema and data, if it does not already
-    /// exist.
+    /// Asynchronously creates the database file and initializes its structure if it does not already exist.
     /// </summary>
-    /// <remarks>This method ensures that the database file is created at the specified location and
-    /// initializes it with a default schema, including a "users" table with a sample user. If the database file already
-    /// exists, the method returns without making any changes.</remarks>
-    /// <returns>A task that represents the asynchronous operation of creating and initializing the database.</returns>
-    /// <exception cref="ArgumentException">Thrown if the database file location or name is not provided (i.e., is null, empty, or consists only of
-    /// whitespace).</exception>
+    /// <remarks>This method ensures that the database file and its parent directory are created if they do
+    /// not exist. If the database file already exists, the method returns immediately without making any changes. If
+    /// the database file is created, it initializes the database by creating a `dbInfo` table and inserting a record.
+    /// </remarks>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task CreateAsync()
     {
         if (!Directory.Exists(DatabaseFileLocation))
@@ -71,11 +70,10 @@ public class SecretsDb
         // Create the users table and insert a sample user
         await using var command = connection.CreateCommand();
         command.CommandText = @"
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL
+            CREATE TABLE IF NOT EXISTS dbInfo (
+                version TEXT NOT NULL
             );
-            INSERT INTO users (name) VALUES ('Danny');
+            INSERT INTO dbInfo (version) VALUES ('0.1')
         ";
         command.ExecuteNonQueryAsync().Wait();
     }
@@ -108,13 +106,22 @@ public class SecretsDb
         }
     }
 
-    public async Task GetUsersAsync()
+    /// <summary>
+    /// Asynchronously retrieves information about the database, including its version.
+    /// </summary>
+    /// <remarks>This method attempts to open a connection to the database file specified by the connection
+    /// string and queries the database for its version. If the database file does not exist, a  <see
+    /// cref="FileNotFoundException"/> is thrown. If the database connection cannot be opened,  a <see
+    /// cref="SqliteException"/> is thrown.</remarks>
+    /// <returns>A <see cref="DatabaseInfo"/> object containing the database version if the query succeeds; otherwise, <see
+    /// langword="null"/> if no version information is found.</returns>
+    /// <exception cref="FileNotFoundException">Thrown if the database file specified by the connection string does not exist.</exception>
+    public async Task<DatabaseInfo?> GetDatabaseInfoAsync()
     {
         if (!File.Exists(FullDatabaseFilePath))
         {
             throw new FileNotFoundException($"Database file not found: {FullDatabaseFilePath}");
         }
-
         await using SqliteConnection connection = new(_connectionString);
         
         try
@@ -127,14 +134,14 @@ public class SecretsDb
             _logger.LogErrorAsync(logMessage, ex).Wait();
             throw;
         }
-
         await using var command = connection.CreateCommand();
-        command.CommandText = "SELECT id, name FROM users;";
+        command.CommandText = "SELECT version FROM dbInfo LIMIT 1;";
         
         await using var reader = command.ExecuteReaderAsync().Result;
-        while (reader.ReadAsync().Result)
+        if (await reader.ReadAsync())
         {
-            Console.WriteLine($"User: {reader.GetInt32(0)} - {reader.GetString(1)}");
+            return new DatabaseInfo { Version = reader.GetString(0) };
         }
+        return null; // No version found
     }
 }

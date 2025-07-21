@@ -13,24 +13,24 @@ public partial class SetupForm : Form
     }
 
     /// <summary>
-    /// Handles the click event for the "Create Database File" button, prompting the user to confirm the creation of a
-    /// database file and saving the application settings.
+    /// Handles the click event for the "Create Database File" button, guiding the user through the process of
+    /// specifying a database file name and location, saving application settings, and creating the database file.
     /// </summary>
     /// <remarks>This method performs the following actions: <list type="bullet"> <item>
-    /// <description>Validates the input for the database file name and prompts the user to confirm the file
-    /// creation.</description> </item> <item> <description>Saves the application settings to a configuration
-    /// file.</description> </item> <item> <description>Creates a new database file at the specified
-    /// location.</description> </item> <item> <description>Updates the parent form's settings and controls if
-    /// applicable.</description> </item> </list> If any errors occur during the saving of settings or database
-    /// creation, an error message is displayed to the user.</remarks>
-    /// <param name="sender">The source of the event, typically the button that was clicked.</param>
+    /// <description>Validates the user input for the database file name and prompts the user to confirm the file
+    /// location.</description> </item> <item> <description>Saves the application settings to a configuration
+    /// file.</description> </item> <item> <description>Creates the database file at the specified location and
+    /// retrieves its metadata.</description> </item> <item> <description>Updates the parent form with the new database
+    /// information and settings, if applicable.</description> </item> </list> If any errors occur during the process
+    /// (e.g., saving settings, creating the database, or retrieving database info), appropriate error messages are
+    /// displayed to the user.</remarks>
+    /// <param name="sender">The source of the event, typically the button being clicked.</param>
     /// <param name="e">The event data associated with the click event.</param>
     private void btnCreateDatabaseFile_Click(object sender, EventArgs e)
     {
         if (string.IsNullOrWhiteSpace(txtFileName.Text))
         {
-            MessageBox.Show("Please specify the database file name.", "Input Error", 
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("Please specify the database file name.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             this.ActiveControl = txtFileName;
             return;
         }
@@ -57,16 +57,14 @@ public partial class SetupForm : Form
             {
                 if (task.IsFaulted)
                 {
-                    MessageBox.Show($"Error saving settings: {task.Exception?.GetBaseException().Message}",
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Error saving settings: {task.Exception?.GetBaseException().Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             });
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"** ERROR SAVING SETTINGS: {ex.Message} **", "Error",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"** ERROR SAVING SETTINGS: {ex.Message} **", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
         }
 
@@ -86,15 +84,27 @@ public partial class SetupForm : Form
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"** ERROR CREATING DATABASE: {ex.Message} **", "Error", 
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"Error creating database: {ex.Message} **", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
         }
 
+        DatabaseInfo? databaseInfo;
+        try
+        {
+            databaseInfo = secretsDb.GetDatabaseInfoAsync().Result;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error getting database info: {ex.Message} **", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+        
         if (Owner is MainForm mainForm)
         {
+            mainForm.DatabaseInfo = databaseInfo;
             mainForm.Settings = settings;
             mainForm.UpdateSettingsControls();
+            mainForm.UpdateDatabaseInfoControls();
         }
 
         this.Close();
