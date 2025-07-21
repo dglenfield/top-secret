@@ -40,11 +40,13 @@ public partial class MainForm : Form
     {
         if (Settings != null)
         {
+            this.Text = $"Top Secret - {Settings.DatabaseFileName}";
             txtFileLocation.Text = Settings.DatabaseFileLocation;
             txtFileName.Text = Settings.DatabaseFileName;
         }
         else
         {
+            this.Text = "Top Secret";
             txtFileLocation.Text = string.Empty;
             txtFileName.Text = string.Empty;
         }
