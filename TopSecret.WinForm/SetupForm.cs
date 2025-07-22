@@ -86,6 +86,31 @@ public partial class SetupForm : Form
             return;
         }
 
+        // Insert sample secret
+        try
+        {
+            secretsDb.InsertSecretAsync(new Secret
+            {
+                Description = "Sample Secret",
+                Notes = "This is a sample secret.",
+                Password = "password123",
+                Username = "SampleUser"
+            }).ContinueWith(insertTask =>
+            {
+                if (insertTask.IsFaulted)
+                {
+                    MessageBox.Show($"Error inserting sample secret: {insertTask.Exception?.GetBaseException().Message}", 
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error inserting sample secret: {ex.Message} **", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+
         if (Owner is MainForm mainForm)
         {
             try

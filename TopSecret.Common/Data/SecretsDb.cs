@@ -87,8 +87,6 @@ public class SecretsDb
                 updatedOn TEXT,
                 username TEXT
             );
-            INSERT INTO secrets (description, password, username)
-            VALUES ('Sample Secret', 'password123', 'sampleuser');
         ";
         command.ExecuteNonQueryAsync().Wait();
     }
@@ -212,5 +210,58 @@ public class SecretsDb
         }
         
         return secrets;
+    }
+
+    /// <summary>
+    /// Asynchronously inserts a secret into the database.
+    /// </summary>
+    /// <remarks>This method requires the database file to exist at the specified path. If the file is not
+    /// found, a <see cref="FileNotFoundException"/> is thrown. The method establishes a connection to the database,
+    /// prepares an SQL command to insert the secret, and executes the command asynchronously.</remarks>
+    /// <param name="secret">The <see cref="Secret"/> object containing the details to be inserted, such as description, notes, password, and
+    /// username.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    /// <exception cref="FileNotFoundException">Thrown if the database file does not exist at the specified path.</exception>
+    public async Task InsertSecretAsync(Secret secret)
+    {
+        if (!File.Exists(FullDatabaseFilePath))
+        {
+            throw new FileNotFoundException($"Database file not found: {FullDatabaseFilePath}");
+        }
+
+        await using SqliteConnection connection = new(_connectionString);
+
+        try
+        {
+            await connection.OpenAsync();
+        }
+        catch (SqliteException ex)
+        {
+            string logMessage = $"Error opening database connection: {connection.ConnectionString}";
+            await _logger.LogErrorAsync(logMessage, ex);
+            throw;
+        }
+
+        await using var command = connection.CreateCommand();
+        command.CommandText = @"
+            INSERT INTO secrets (description, notes, password, username)
+            VALUES (@description, @notes, @password, @username);
+        ";
+
+        command.Parameters.AddWithValue("@description", (object?)secret.Description ?? DBNull.Value);
+        command.Parameters.AddWithValue("@notes", (object?)secret.Notes ?? DBNull.Value);
+        command.Parameters.AddWithValue("@password", (object?)secret.Password ?? DBNull.Value);
+        command.Parameters.AddWithValue("@username", (object?)secret.Username ?? DBNull.Value);
+
+        try
+        {
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception ex)
+        {
+            string logMessage = "Error inserting secret into database.";
+            await _logger.LogErrorAsync(logMessage, ex);
+            throw;
+        }
     }
 }
