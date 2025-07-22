@@ -87,6 +87,8 @@ public class SecretsDb
                 updatedOn TEXT,
                 username TEXT
             );
+            INSERT INTO secrets (description, password, username)
+            VALUES ('Sample Secret', 'password123', 'sampleuser');
         ";
         command.ExecuteNonQueryAsync().Wait();
     }
@@ -135,6 +137,7 @@ public class SecretsDb
         {
             throw new FileNotFoundException($"Database file not found: {FullDatabaseFilePath}");
         }
+
         await using SqliteConnection connection = new(_connectionString);
         
         try
@@ -147,6 +150,7 @@ public class SecretsDb
             _logger.LogErrorAsync(logMessage, ex).Wait();
             throw;
         }
+
         await using var command = connection.CreateCommand();
         command.CommandText = "SELECT version FROM dbInfo LIMIT 1;";
         
@@ -155,6 +159,58 @@ public class SecretsDb
         {
             return new DatabaseInfo { Version = reader.GetString(0) };
         }
+
         return null; // No version found
+    }
+
+    /// <summary>
+    /// Asynchronously retrieves all secrets stored in the database.
+    /// </summary>
+    /// <remarks>This method queries the database for all records in the "secrets" table and returns them as a
+    /// collection of <see cref="Secret"/> objects. The database file must exist at the specified path, and the
+    /// connection string must be valid.</remarks>
+    /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="IEnumerable{T}"/> of
+    /// <see cref="Secret"/> objects. If no secrets are found, the returned collection will be empty.</returns>
+    /// <exception cref="FileNotFoundException">Thrown if the database file does not exist at the specified path.</exception>
+    public async Task<IEnumerable<Secret>> GetAllSecretsAsync()
+    {
+        if (!File.Exists(FullDatabaseFilePath))
+        {
+            throw new FileNotFoundException($"Database file not found: {FullDatabaseFilePath}");
+        }
+        
+        await using SqliteConnection connection = new(_connectionString);
+        
+        try
+        {
+            await connection.OpenAsync();
+        }
+        catch (SqliteException ex)
+        {
+            string logMessage = $"Error opening database connection: {connection.ConnectionString}";
+            _logger.LogErrorAsync(logMessage, ex).Wait();
+            throw;
+        }
+
+        await using var command = connection.CreateCommand();
+        command.CommandText = "SELECT id, createdOn, description, notes, password, updatedOn, username FROM secrets;";
+        
+        await using var reader = command.ExecuteReaderAsync().Result;
+        var secrets = new List<Secret>();
+        while (await reader.ReadAsync())
+        {
+            secrets.Add(new Secret
+            {
+                Id = reader.GetInt32(0),
+                CreatedOn = reader.GetDateTime(1),
+                Description = reader.IsDBNull(2) ? null : reader.GetString(2),
+                Notes = reader.IsDBNull(3) ? null : reader.GetString(3),
+                Password = reader.IsDBNull(4) ? null : reader.GetString(4),
+                UpdatedOn = reader.IsDBNull(5) ? null : reader.GetDateTime(5),
+                Username = reader.IsDBNull(6) ? null : reader.GetString(6)
+            });
+        }
+        
+        return secrets;
     }
 }

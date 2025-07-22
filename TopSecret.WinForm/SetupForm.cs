@@ -13,18 +13,16 @@ public partial class SetupForm : Form
     }
 
     /// <summary>
-    /// Handles the click event for the "Create Database File" button, guiding the user through the process of
-    /// specifying a database file name and location, saving application settings, and creating the database file.
+    /// Handles the click event for the "Create Database File" button, guiding the user through the process of creating
+    /// a new database file.
     /// </summary>
-    /// <remarks>This method performs the following actions: <list type="bullet"> <item>
-    /// <description>Validates the user input for the database file name and prompts the user to confirm the file
-    /// location.</description> </item> <item> <description>Saves the application settings to a configuration
-    /// file.</description> </item> <item> <description>Creates the database file at the specified location and
-    /// retrieves its metadata.</description> </item> <item> <description>Updates the parent form with the new database
-    /// information and settings, if applicable.</description> </item> </list> If any errors occur during the process
-    /// (e.g., saving settings, creating the database, or retrieving database info), appropriate error messages are
-    /// displayed to the user.</remarks>
-    /// <param name="sender">The source of the event, typically the button being clicked.</param>
+    /// <remarks>This method performs the following actions: <list type="bullet"> <item>Validates the user
+    /// input for the database file name.</item> <item>Prompts the user to confirm the file creation location.</item>
+    /// <item>Saves application settings to a configuration file.</item> <item>Creates a new database file at the
+    /// specified location.</item> <item>Updates the parent form with the new database information and settings.</item>
+    /// </list> If any errors occur during the process (e.g., saving settings, creating the database, or querying the
+    /// database),  appropriate error messages are displayed to the user.</remarks>
+    /// <param name="sender">The source of the event, typically the button that was clicked.</param>
     /// <param name="e">The event data associated with the click event.</param>
     private void btnCreateDatabaseFile_Click(object sender, EventArgs e)
     {
@@ -88,20 +86,18 @@ public partial class SetupForm : Form
             return;
         }
 
-        DatabaseInfo? databaseInfo;
-        try
-        {
-            databaseInfo = secretsDb.GetDatabaseInfoAsync().Result;
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Error getting database info: {ex.Message} **", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return;
-        }
-        
         if (Owner is MainForm mainForm)
         {
-            mainForm.DatabaseInfo = databaseInfo;
+            try
+            {
+                mainForm.DatabaseInfo = secretsDb.GetDatabaseInfoAsync().Result;
+                mainForm.Secrets = [.. secretsDb.GetAllSecretsAsync().Result];
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error querying database: {ex.Message} **", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }            
             mainForm.Settings = settings;
             mainForm.UpdateSettingsControls();
             mainForm.UpdateDatabaseInfoControls();

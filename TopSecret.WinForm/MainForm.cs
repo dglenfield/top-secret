@@ -7,6 +7,7 @@ public partial class MainForm : Form
 {
     public ApplicationSettings? Settings { get; set; }
     public DatabaseInfo? DatabaseInfo { get; set; }
+    public List<Secret> Secrets { get; set; } = [];
 
     public MainForm()
     {
@@ -28,6 +29,8 @@ public partial class MainForm : Form
         {
             txtVersion.Text = string.Empty;
         }
+
+        txtRecordCount.Text = Secrets.Count.ToString();
     }
 
     /// <summary>
@@ -53,13 +56,15 @@ public partial class MainForm : Form
     }
 
     /// <summary>
-    /// Handles the load event of the form, initializing application settings or prompting the user to configure them if
-    /// missing.
+    /// Handles the loading process for the form, initializing application settings and database information.
     /// </summary>
-    /// <remarks>This method checks for the existence of the application settings file. If the file is
-    /// missing,  it displays a setup dialog to the user. If the file exists, it attempts to load the settings
-    /// asynchronously  and updates the form controls accordingly. If the settings file cannot be found during the
-    /// loading process,  an error message is displayed to the user.</remarks>
+    /// <remarks>This method performs the following steps: <list type="bullet"> <item> Checks for the
+    /// existence of the application settings file. If the file is missing, it displays a setup form to the user.
+    /// </item> <item> Attempts to load the application settings asynchronously. If the settings file is not found or
+    /// cannot be loaded, an error message is displayed. </item> <item> If settings are successfully loaded, initializes
+    /// the database connection and retrieves database information and secrets asynchronously.  If an error occurs
+    /// during database operations, an error message is displayed. </item> </list> This method overrides <see
+    /// cref="Control.OnLoad"/> and is invoked when the form is loaded.</remarks>
     /// <param name="e">An <see cref="EventArgs"/> object containing the event data.</param>
     protected override async void OnLoad(EventArgs e)
     {
@@ -84,19 +89,20 @@ public partial class MainForm : Form
             return;
         }
 
-        if (Settings != null)
+        if (Settings == null)
+            return;
+
+        SecretsDb secretsDb = new(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
+        try
         {
-            SecretsDb secretsDb = new(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
-            try
-            {
-                DatabaseInfo = await secretsDb.GetDatabaseInfoAsync();
-                UpdateDatabaseInfoControls();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Could not load database info: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            DatabaseInfo = await secretsDb.GetDatabaseInfoAsync();
+            Secrets = [.. await secretsDb.GetAllSecretsAsync()];
+            UpdateDatabaseInfoControls();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error querying database: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
         }
     }
 }

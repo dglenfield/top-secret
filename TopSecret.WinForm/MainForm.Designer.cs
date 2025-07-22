@@ -34,6 +34,8 @@
             txtFileName = new TextBox();
             txtVersion = new TextBox();
             label3 = new Label();
+            label4 = new Label();
+            txtRecordCount = new TextBox();
             SuspendLayout();
             // 
             // label1
@@ -84,11 +86,29 @@
             label3.TabIndex = 5;
             label3.Text = "Database Version";
             // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(62, 137);
+            label4.Name = "label4";
+            label4.Size = new Size(80, 15);
+            label4.TabIndex = 6;
+            label4.Text = "Record Count";
+            // 
+            // txtRecordCount
+            // 
+            txtRecordCount.Location = new Point(148, 134);
+            txtRecordCount.Name = "txtRecordCount";
+            txtRecordCount.Size = new Size(100, 23);
+            txtRecordCount.TabIndex = 7;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(txtRecordCount);
+            Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(txtVersion);
             Controls.Add(txtFileName);
@@ -109,5 +129,7 @@
         private TextBox txtFileName;
         private TextBox txtVersion;
         private Label label3;
+        private Label label4;
+        private TextBox txtRecordCount;
     }
 }
