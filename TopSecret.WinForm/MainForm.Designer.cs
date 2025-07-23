@@ -28,6 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             label1 = new Label();
             label2 = new Label();
             txtFileLocation = new TextBox();
@@ -36,6 +40,17 @@
             label3 = new Label();
             label4 = new Label();
             txtRecordCount = new TextBox();
+            secretsDataGridView = new DataGridView();
+            secretsBindingSource = new BindingSource(components);
+            idDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            descriptionDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            usernameDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            passwordDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            notesDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            createdOnDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            updatedOnDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)secretsDataGridView).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)secretsBindingSource).BeginInit();
             SuspendLayout();
             // 
             // label1
@@ -102,11 +117,111 @@
             txtRecordCount.Size = new Size(100, 23);
             txtRecordCount.TabIndex = 7;
             // 
+            // secretsDataGridView
+            // 
+            secretsDataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            secretsDataGridView.AutoGenerateColumns = false;
+            secretsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            secretsDataGridView.Columns.AddRange(new DataGridViewColumn[] { idDataGridViewTextBoxColumn, descriptionDataGridViewTextBoxColumn, usernameDataGridViewTextBoxColumn, passwordDataGridViewTextBoxColumn, notesDataGridViewTextBoxColumn, createdOnDataGridViewTextBoxColumn, updatedOnDataGridViewTextBoxColumn });
+            secretsDataGridView.DataSource = secretsBindingSource;
+            secretsDataGridView.Location = new Point(17, 200);
+            secretsDataGridView.Name = "secretsDataGridView";
+            secretsDataGridView.Size = new Size(949, 238);
+            secretsDataGridView.TabIndex = 8;
+            // 
+            // secretsBindingSource
+            // 
+            secretsBindingSource.DataSource = typeof(Common.Models.Secret);
+            // 
+            // idDataGridViewTextBoxColumn
+            // 
+            idDataGridViewTextBoxColumn.DataPropertyName = "Id";
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = Color.Silver;
+            dataGridViewCellStyle1.ForeColor = Color.Black;
+            dataGridViewCellStyle1.Format = "N0";
+            dataGridViewCellStyle1.NullValue = null;
+            dataGridViewCellStyle1.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle1.SelectionForeColor = Color.Black;
+            idDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            idDataGridViewTextBoxColumn.HeaderText = "Id";
+            idDataGridViewTextBoxColumn.Name = "idDataGridViewTextBoxColumn";
+            idDataGridViewTextBoxColumn.ReadOnly = true;
+            idDataGridViewTextBoxColumn.Width = 40;
+            // 
+            // descriptionDataGridViewTextBoxColumn
+            // 
+            descriptionDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            descriptionDataGridViewTextBoxColumn.DataPropertyName = "Description";
+            descriptionDataGridViewTextBoxColumn.HeaderText = "Description";
+            descriptionDataGridViewTextBoxColumn.MinimumWidth = 100;
+            descriptionDataGridViewTextBoxColumn.Name = "descriptionDataGridViewTextBoxColumn";
+            // 
+            // usernameDataGridViewTextBoxColumn
+            // 
+            usernameDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            usernameDataGridViewTextBoxColumn.DataPropertyName = "Username";
+            usernameDataGridViewTextBoxColumn.HeaderText = "Username";
+            usernameDataGridViewTextBoxColumn.MinimumWidth = 80;
+            usernameDataGridViewTextBoxColumn.Name = "usernameDataGridViewTextBoxColumn";
+            // 
+            // passwordDataGridViewTextBoxColumn
+            // 
+            passwordDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            passwordDataGridViewTextBoxColumn.DataPropertyName = "Password";
+            passwordDataGridViewTextBoxColumn.HeaderText = "Password";
+            passwordDataGridViewTextBoxColumn.MinimumWidth = 80;
+            passwordDataGridViewTextBoxColumn.Name = "passwordDataGridViewTextBoxColumn";
+            // 
+            // notesDataGridViewTextBoxColumn
+            // 
+            notesDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            notesDataGridViewTextBoxColumn.DataPropertyName = "Notes";
+            notesDataGridViewTextBoxColumn.FillWeight = 200F;
+            notesDataGridViewTextBoxColumn.HeaderText = "Notes";
+            notesDataGridViewTextBoxColumn.MinimumWidth = 100;
+            notesDataGridViewTextBoxColumn.Name = "notesDataGridViewTextBoxColumn";
+            // 
+            // createdOnDataGridViewTextBoxColumn
+            // 
+            createdOnDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            createdOnDataGridViewTextBoxColumn.DataPropertyName = "CreatedOn";
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = Color.Silver;
+            dataGridViewCellStyle2.ForeColor = Color.Black;
+            dataGridViewCellStyle2.Format = "g";
+            dataGridViewCellStyle2.NullValue = null;
+            dataGridViewCellStyle2.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle2.SelectionForeColor = Color.Black;
+            createdOnDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            createdOnDataGridViewTextBoxColumn.HeaderText = "CreatedOn";
+            createdOnDataGridViewTextBoxColumn.Name = "createdOnDataGridViewTextBoxColumn";
+            createdOnDataGridViewTextBoxColumn.ReadOnly = true;
+            createdOnDataGridViewTextBoxColumn.Width = 120;
+            // 
+            // updatedOnDataGridViewTextBoxColumn
+            // 
+            updatedOnDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            updatedOnDataGridViewTextBoxColumn.DataPropertyName = "UpdatedOn";
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = Color.Silver;
+            dataGridViewCellStyle3.ForeColor = Color.Black;
+            dataGridViewCellStyle3.Format = "g";
+            dataGridViewCellStyle3.NullValue = null;
+            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle3.SelectionForeColor = Color.Black;
+            updatedOnDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            updatedOnDataGridViewTextBoxColumn.HeaderText = "UpdatedOn";
+            updatedOnDataGridViewTextBoxColumn.Name = "updatedOnDataGridViewTextBoxColumn";
+            updatedOnDataGridViewTextBoxColumn.ReadOnly = true;
+            updatedOnDataGridViewTextBoxColumn.Width = 120;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(978, 450);
+            Controls.Add(secretsDataGridView);
             Controls.Add(txtRecordCount);
             Controls.Add(label4);
             Controls.Add(label3);
@@ -117,6 +232,8 @@
             Controls.Add(label1);
             Name = "MainForm";
             Text = "Top Secret";
+            ((System.ComponentModel.ISupportInitialize)secretsDataGridView).EndInit();
+            ((System.ComponentModel.ISupportInitialize)secretsBindingSource).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -131,5 +248,14 @@
         private Label label3;
         private Label label4;
         private TextBox txtRecordCount;
+        private DataGridView secretsDataGridView;
+        private BindingSource secretsBindingSource;
+        private DataGridViewTextBoxColumn idDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn descriptionDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn usernameDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn passwordDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn notesDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn createdOnDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn updatedOnDataGridViewTextBoxColumn;
     }
 }

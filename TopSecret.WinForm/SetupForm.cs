@@ -13,17 +13,15 @@ public partial class SetupForm : Form
     }
 
     /// <summary>
-    /// Handles the click event for the "Create Database File" button, guiding the user through the process of creating
-    /// a new database file.
+    /// Handles the click event for the "Create Database File" button, initiating the process of creating a new database
+    /// file.
     /// </summary>
-    /// <remarks>This method performs the following actions: <list type="bullet"> <item>Validates the user
-    /// input for the database file name.</item> <item>Prompts the user to confirm the file creation location.</item>
-    /// <item>Saves application settings to a configuration file.</item> <item>Creates a new database file at the
-    /// specified location.</item> <item>Updates the parent form with the new database information and settings.</item>
-    /// </list> If any errors occur during the process (e.g., saving settings, creating the database, or querying the
-    /// database),  appropriate error messages are displayed to the user.</remarks>
-    /// <param name="sender">The source of the event, typically the button that was clicked.</param>
-    /// <param name="e">The event data associated with the click event.</param>
+    /// <remarks>This method validates the input for the database file name and prompts the user for
+    /// confirmation before proceeding. It saves the application settings to a configuration file and creates a new
+    /// database file at the specified location. If the operation is successful, it updates the main form with the new
+    /// database information and secrets.</remarks>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
     private void btnCreateDatabaseFile_Click(object sender, EventArgs e)
     {
         if (string.IsNullOrWhiteSpace(txtFileName.Text))
@@ -86,46 +84,22 @@ public partial class SetupForm : Form
             return;
         }
 
-        // Insert sample secret
-        try
-        {
-            secretsDb.InsertSecretAsync(new Secret
-            {
-                Description = "Sample Secret",
-                Notes = "This is a sample secret.",
-                Password = "password123",
-                Username = "SampleUser"
-            }).ContinueWith(insertTask =>
-            {
-                if (insertTask.IsFaulted)
-                {
-                    MessageBox.Show($"Error inserting sample secret: {insertTask.Exception?.GetBaseException().Message}", 
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-            });
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Error inserting sample secret: {ex.Message} **", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return;
-        }
-
         if (Owner is MainForm mainForm)
         {
             try
             {
                 mainForm.DatabaseInfo = secretsDb.GetDatabaseInfoAsync().Result;
                 mainForm.Secrets = [.. secretsDb.GetAllSecretsAsync().Result];
+                mainForm.Secrets.Add(new Secret()); // Add a new empty Secret to the list
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error querying database: {ex.Message} **", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
-            }            
+            }
+            
             mainForm.Settings = settings;
-            mainForm.UpdateSettingsControls();
-            mainForm.UpdateDatabaseInfoControls();
+            mainForm.UpdateInfoControls();
         }
 
         this.Close();

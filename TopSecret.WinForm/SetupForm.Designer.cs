@@ -106,6 +106,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(670, 450);
+            ControlBox = false;
             Controls.Add(label3);
             Controls.Add(btnCreateDatabaseFile);
             Controls.Add(txtFileName);
@@ -113,7 +114,10 @@
             Controls.Add(label1);
             Controls.Add(txtFolderPath);
             Controls.Add(btnSelectFolder);
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "SetupForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Top Secret";
             ResumeLayout(false);
             PerformLayout();
