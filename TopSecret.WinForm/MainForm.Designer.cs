@@ -41,7 +41,6 @@
             label4 = new Label();
             txtRecordCount = new TextBox();
             secretsDataGridView = new DataGridView();
-            secretsBindingSource = new BindingSource(components);
             idDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             descriptionDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             usernameDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
@@ -49,6 +48,7 @@
             notesDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             createdOnDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             updatedOnDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            secretsBindingSource = new BindingSource(components);
             ((System.ComponentModel.ISupportInitialize)secretsDataGridView).BeginInit();
             ((System.ComponentModel.ISupportInitialize)secretsBindingSource).BeginInit();
             SuspendLayout();
@@ -75,6 +75,7 @@
             // 
             txtFileLocation.Location = new Point(148, 18);
             txtFileLocation.Name = "txtFileLocation";
+            txtFileLocation.ReadOnly = true;
             txtFileLocation.Size = new Size(432, 23);
             txtFileLocation.TabIndex = 2;
             // 
@@ -82,6 +83,7 @@
             // 
             txtFileName.Location = new Point(148, 56);
             txtFileName.Name = "txtFileName";
+            txtFileName.ReadOnly = true;
             txtFileName.Size = new Size(235, 23);
             txtFileName.TabIndex = 3;
             // 
@@ -89,6 +91,7 @@
             // 
             txtVersion.Location = new Point(148, 95);
             txtVersion.Name = "txtVersion";
+            txtVersion.ReadOnly = true;
             txtVersion.Size = new Size(100, 23);
             txtVersion.TabIndex = 4;
             // 
@@ -114,6 +117,7 @@
             // 
             txtRecordCount.Location = new Point(148, 134);
             txtRecordCount.Name = "txtRecordCount";
+            txtRecordCount.ReadOnly = true;
             txtRecordCount.Size = new Size(100, 23);
             txtRecordCount.TabIndex = 7;
             // 
@@ -128,10 +132,6 @@
             secretsDataGridView.Name = "secretsDataGridView";
             secretsDataGridView.Size = new Size(949, 238);
             secretsDataGridView.TabIndex = 8;
-            // 
-            // secretsBindingSource
-            // 
-            secretsBindingSource.DataSource = typeof(Common.Models.Secret);
             // 
             // idDataGridViewTextBoxColumn
             // 
@@ -215,6 +215,10 @@
             updatedOnDataGridViewTextBoxColumn.Name = "updatedOnDataGridViewTextBoxColumn";
             updatedOnDataGridViewTextBoxColumn.ReadOnly = true;
             updatedOnDataGridViewTextBoxColumn.Width = 120;
+            // 
+            // secretsBindingSource
+            // 
+            secretsBindingSource.DataSource = typeof(Common.Models.Secret);
             // 
             // MainForm
             // 

@@ -104,6 +104,10 @@ public partial class MainForm : Form
             MessageBox.Show($"Error querying database: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
         }
+
+        // Set the current cell to the new row for editing
+        secretsDataGridView.Focus();
+        secretsDataGridView.CurrentCell = secretsDataGridView.Rows[0].Cells[0];
     }
 
     /// <summary>
