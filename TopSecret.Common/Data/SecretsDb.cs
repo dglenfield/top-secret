@@ -264,4 +264,59 @@ public class SecretsDb
             throw;
         }
     }
+
+    /// <summary>
+    /// Updates an existing secret in the database with the provided details.
+    /// </summary>
+    /// <remarks>This method updates the fields of an existing secret in the database. The secret's ID is used
+    /// to locate the record to update. Ensure that the database file exists and the connection string is correctly
+    /// configured before calling this method.</remarks>
+    /// <param name="secret">The secret object containing updated information. The <see cref="Secret.Id"/> must correspond to an existing
+    /// record in the database.</param>
+    /// <returns></returns>
+    /// <exception cref="FileNotFoundException">Thrown if the database file does not exist at the specified path.</exception>
+    public async Task UpdateSecretAsync(Secret secret)
+    {
+        if (!File.Exists(FullDatabaseFilePath))
+        {
+            throw new FileNotFoundException($"Database file not found: {FullDatabaseFilePath}");
+        }
+
+        await using SqliteConnection connection = new(_connectionString);
+
+        try
+        {
+            await connection.OpenAsync();
+        }
+        catch (SqliteException ex)
+        {
+            string logMessage = $"Error opening database connection: {connection.ConnectionString}";
+            await _logger.LogErrorAsync(logMessage, ex);
+            throw;
+        }
+
+        await using var command = connection.CreateCommand();
+        command.CommandText = @"
+            UPDATE secrets SET description = @description, notes = @notes, password = @password, 
+                username = @username, updatedon = datetime('now')
+            WHERE id = @id;
+        ";
+
+        command.Parameters.AddWithValue("@id", (object?)secret.Id ?? DBNull.Value);
+        command.Parameters.AddWithValue("@description", (object?)secret.Description ?? DBNull.Value);
+        command.Parameters.AddWithValue("@notes", (object?)secret.Notes ?? DBNull.Value);
+        command.Parameters.AddWithValue("@password", (object?)secret.Password ?? DBNull.Value);
+        command.Parameters.AddWithValue("@username", (object?)secret.Username ?? DBNull.Value);
+
+        try
+        {
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception ex)
+        {
+            string logMessage = "Error updating secret in the database.";
+            await _logger.LogErrorAsync(logMessage, ex);
+            throw;
+        }
+    }
 }

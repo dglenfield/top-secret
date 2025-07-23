@@ -65,7 +65,7 @@ public partial class MainForm : Form
             HeaderText = string.Empty,
             Name = "AddButton",
             Text = "Add",
-            UseColumnTextForButtonValue = true
+            UseColumnTextForButtonValue = false
         };
         secretsDataGridView.Columns.Add(addButtonColumn);
         secretsDataGridView.CellClick += secretsDataGridView_CellClick;
@@ -112,14 +112,16 @@ public partial class MainForm : Form
     }
 
     /// <summary>
-    /// Handles the cell click event for the secrets data grid view, allowing the user to add a new secret entry.
+    /// Handles the cell click event for the secrets data grid view, allowing for the insertion or update of secret
+    /// entries.
     /// </summary>
-    /// <remarks>This method checks if the clicked cell is in the "AddButton" column and if the first cell of
-    /// the row is empty. If so, it creates a new <see cref="Secret"/> object from the row's data, inserts it into the
-    /// database asynchronously, and refreshes the data grid view to include the new entry. The current cell is then set
-    /// to the new row for editing.</remarks>
+    /// <remarks>If the clicked cell is in the "AddButton" column and the first cell of the row is empty, a
+    /// new secret is inserted into the database. Otherwise, if the clicked cell is in the "AddButton" column, the
+    /// existing secret in the row is updated in the database. The method refreshes the grid and sets the current cell
+    /// to the new row for editing after an insertion.</remarks>
     /// <param name="sender">The source of the event, typically the secrets data grid view.</param>
-    /// <param name="e">The <see cref="DataGridViewCellEventArgs"/> instance containing the event data.</param>
+    /// <param name="e">The <see cref="DataGridViewCellEventArgs"/> instance containing the event data, including the index of the
+    /// clicked cell.</param>
     private async void secretsDataGridView_CellClick(object? sender, DataGridViewCellEventArgs e)
     {
         if (Settings == null)
@@ -128,6 +130,7 @@ public partial class MainForm : Form
         if (e.ColumnIndex == secretsDataGridView.Columns["AddButton"].Index &&
             secretsDataGridView.Rows[e.RowIndex].Cells[0].Value == null)
         {
+            // Insert a new secret into the database
             var row = secretsDataGridView.Rows[e.RowIndex];
             var secret = new Secret
             {
@@ -148,16 +151,33 @@ public partial class MainForm : Form
             // Set the current cell to the new row for editing
             secretsDataGridView.CurrentCell = secretsDataGridView.Rows[secretsDataGridView.Rows.Count - 1].Cells[1];
         }
+        else if (e.ColumnIndex == secretsDataGridView.Columns["AddButton"].Index)
+        {
+            // Update the secret in the database
+            var row = secretsDataGridView.Rows[e.RowIndex];
+            var secret = new Secret
+            {
+                Id = (int?)row.Cells["idDataGridViewTextBoxColumn"].Value,
+                Username = row.Cells["usernameDataGridViewTextBoxColumn"].Value?.ToString(),
+                Password = row.Cells["passwordDataGridViewTextBoxColumn"].Value?.ToString(),
+                Description = row.Cells["descriptionDataGridViewTextBoxColumn"].Value?.ToString(),
+                Notes = row.Cells["notesDataGridViewTextBoxColumn"].Value?.ToString()
+            };
+
+            var secretsDb = new SecretsDb(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
+            await secretsDb.UpdateSecretAsync(secret);
+        }
     }
 
     /// <summary>
-    /// Handles the cell painting event for the secrets data grid view, customizing the appearance of cells in the
-    /// "AddButton" column.
+    /// Customizes the painting of cells in the DataGridView, specifically handling the appearance of the "AddButton"
+    /// column.
     /// </summary>
-    /// <remarks>This method customizes the painting of cells in the "AddButton" column based on certain
-    /// conditions. If the cell is in the "AddButton" column and either the row has an ID or the cell is not currently
-    /// being edited, the background of the cell is painted, and the default button drawing is suppressed.</remarks>
-    /// <param name="sender">The source of the event, typically the secrets data grid view.</param>
+    /// <remarks>This method alters the default painting behavior for cells in the "AddButton" column.  If the
+    /// cell is not in edit mode, it paints the background and prevents the default button drawing. If the cell is in
+    /// edit mode, it sets the cell's value to "Save" or "Add" based on the presence of an ID in the first cell of the
+    /// row.</remarks>
+    /// <param name="sender">The source of the event, typically the DataGridView.</param>
     /// <param name="e">A <see cref="DataGridViewCellPaintingEventArgs"/> that contains the event data.</param>
     private void secretsDataGridView_CellPainting(object? sender, DataGridViewCellPaintingEventArgs e)
     {
@@ -168,10 +188,16 @@ public partial class MainForm : Form
         bool hasId = secretsDataGridView.Rows[e.RowIndex].Cells[0].Value != null;
         bool noCellInEdit = secretsDataGridView.CurrentCell == null || secretsDataGridView.CurrentCell.RowIndex != e.RowIndex;
 
-        if (isAddButtonColumn && (hasId || noCellInEdit))
+        if (isAddButtonColumn && noCellInEdit)
         {
             e.PaintBackground(e.CellBounds, true);
-            e.Handled = true; // Prevents the button from being drawn
+            e.Handled = true; // Prevents the default button drawing
+        }
+        else if (isAddButtonColumn)
+        {
+            secretsDataGridView.Rows[e.RowIndex].Cells["AddButton"].Value = hasId ? "Save" : "Add";
+            e.Paint(e.CellBounds, DataGridViewPaintParts.All);
+            e.Handled = true; // Prevents the default button drawing
         }
     }
 
