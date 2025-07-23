@@ -19,6 +19,7 @@ public partial class MainForm : Form
         secretsDataGridView.AllowUserToAddRows = false;
         secretsDataGridView.CellPainting += secretsDataGridView_CellPainting;
         secretsDataGridView.RowEnter += secretsDataGridView_RowEnter;
+        secretsDataGridView.CellClick += secretsDataGridView_CellClick;
     }
 
     /// <summary>
@@ -68,7 +69,6 @@ public partial class MainForm : Form
             UseColumnTextForButtonValue = false
         };
         secretsDataGridView.Columns.Add(addButtonColumn);
-        secretsDataGridView.CellClick += secretsDataGridView_CellClick;
 
         string settingsPath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
         if (!File.Exists(settingsPath))
@@ -166,6 +166,11 @@ public partial class MainForm : Form
 
             var secretsDb = new SecretsDb(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
             await secretsDb.UpdateSecretAsync(secret);
+
+            // Refresh grid
+            Secrets = [.. await secretsDb.GetAllSecretsAsync()];
+            Secrets.Add(new Secret()); // Add a new empty Secret to the list
+            UpdateInfoControls();
         }
     }
 
