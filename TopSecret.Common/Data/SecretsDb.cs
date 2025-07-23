@@ -120,6 +120,50 @@ public class SecretsDb
     }
 
     /// <summary>
+    /// Asynchronously deletes a secret from the database by its identifier.
+    /// </summary>
+    /// <remarks>This method logs any errors encountered during the database connection or deletion process.
+    /// Ensure that the database file exists and the connection string is correctly configured before calling this
+    /// method.</remarks>
+    /// <param name="secretId">The identifier of the secret to be deleted. Must be a valid secret ID present in the database.</param>
+    /// <returns>A task that represents the asynchronous delete operation.</returns>
+    /// <exception cref="FileNotFoundException">Thrown if the database file is not found at the specified path.</exception>
+    public async Task DeleteSecretAsync(int secretId)
+    {
+        if (!File.Exists(FullDatabaseFilePath))
+        {
+            throw new FileNotFoundException($"Database file not found: {FullDatabaseFilePath}");
+        }
+        await using SqliteConnection connection = new(_connectionString);
+        
+        try
+        {
+            await connection.OpenAsync();
+        }
+        catch (SqliteException ex)
+        {
+            string logMessage = $"Error opening database connection: {connection.ConnectionString}";
+            _logger.LogErrorAsync(logMessage, ex).Wait();
+            throw;
+        }
+        
+        await using var command = connection.CreateCommand();
+        command.CommandText = "DELETE FROM secrets WHERE id = @id;";
+        command.Parameters.AddWithValue("@id", secretId);
+
+        try
+        {
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception ex)
+        {
+            string logMessage = "Error deleting secret from database.";
+            await _logger.LogErrorAsync(logMessage, ex);
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Asynchronously retrieves information about the database, including its version.
     /// </summary>
     /// <remarks>This method attempts to open a connection to the database file specified by the connection

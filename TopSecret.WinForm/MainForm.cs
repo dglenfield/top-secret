@@ -17,6 +17,8 @@ public partial class MainForm : Form
         InitializeComponent();
 
         secretsDataGridView.AllowUserToAddRows = false;
+        secretsDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+        secretsDataGridView.MultiSelect = false;
         secretsDataGridView.CellPainting += secretsDataGridView_CellPainting;
         secretsDataGridView.RowEnter += secretsDataGridView_RowEnter;
         secretsDataGridView.CellClick += secretsDataGridView_CellClick;
@@ -43,12 +45,11 @@ public partial class MainForm : Form
     /// <summary>
     /// Handles the loading event of the form, initializing UI components and loading application settings.
     /// </summary>
-    /// <remarks>This method adds a button column to the DataGridView and sets up an event handler for cell
-    /// clicks. It attempts to load application settings from a JSON file. If the settings file is not found, a setup
-    /// form is displayed. Upon successful loading of settings, it initializes the database connection and retrieves
-    /// secrets, updating the UI accordingly. Displays error messages for file not found or database query
-    /// errors.</remarks>
-    /// <param name="e">An <see cref="EventArgs"/> that contains the event data.</param>
+    /// <remarks>This method adds button columns to the DataGridView for adding and deleting items. It
+    /// attempts to load application settings from a JSON file and initializes the database connection to retrieve and
+    /// display secrets. If the settings file is missing, a setup form is displayed. Errors during database access are
+    /// reported to the user via message boxes.</remarks>
+    /// <param name="e"></param>
     protected override async void OnLoad(EventArgs e)
     {
         base.OnLoad(e);
@@ -69,6 +70,23 @@ public partial class MainForm : Form
             UseColumnTextForButtonValue = false
         };
         secretsDataGridView.Columns.Add(addButtonColumn);
+
+        var deleteButtonColumn = new DataGridViewButtonColumn
+        {
+            DefaultCellStyle = new DataGridViewCellStyle
+            {
+                Alignment = DataGridViewContentAlignment.MiddleCenter,
+                BackColor = Color.Silver,
+                ForeColor = Color.Silver,
+                SelectionBackColor = Color.Silver,
+                SelectionForeColor = Color.Silver
+            },
+            HeaderText = string.Empty,
+            Name = "DeleteButton",
+            Text = "Delete",
+            UseColumnTextForButtonValue = false
+        };
+        secretsDataGridView.Columns.Add(deleteButtonColumn);
 
         string settingsPath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
         if (!File.Exists(settingsPath))
@@ -112,13 +130,16 @@ public partial class MainForm : Form
     }
 
     /// <summary>
-    /// Handles the cell click event for the secrets data grid view, allowing for the insertion or update of secret
-    /// entries.
+    /// Handles the cell click event for the secrets data grid view, allowing for the addition, update, or deletion of
+    /// secrets.
     /// </summary>
-    /// <remarks>If the clicked cell is in the "AddButton" column and the first cell of the row is empty, a
-    /// new secret is inserted into the database. Otherwise, if the clicked cell is in the "AddButton" column, the
-    /// existing secret in the row is updated in the database. The method refreshes the grid and sets the current cell
-    /// to the new row for editing after an insertion.</remarks>
+    /// <remarks>This method performs different actions based on the column of the clicked cell: <list
+    /// type="bullet"> <item><description>If the "AddButton" column is clicked and the row is new, a new secret is
+    /// inserted into the database.</description></item> <item><description>If the "AddButton" column is clicked and the
+    /// row is existing, the secret is updated in the database.</description></item> <item><description>If the
+    /// "DeleteButton" column is clicked, the secret is deleted from the database if it exists.</description></item>
+    /// </list> The method refreshes the data grid view after each operation to reflect the current state of the
+    /// database.</remarks>
     /// <param name="sender">The source of the event, typically the secrets data grid view.</param>
     /// <param name="e">The <see cref="DataGridViewCellEventArgs"/> instance containing the event data, including the index of the
     /// clicked cell.</param>
@@ -172,16 +193,40 @@ public partial class MainForm : Form
             Secrets.Add(new Secret()); // Add a new empty Secret to the list
             UpdateInfoControls();
         }
+
+        if (e.ColumnIndex == secretsDataGridView.Columns["DeleteButton"].Index && 
+            secretsDataGridView.Rows[e.RowIndex].Cells[0].Value == null)
+        {
+            secretsDataGridView.Rows[e.RowIndex].Cells["descriptionDataGridViewTextBoxColumn"].Value = string.Empty;
+            secretsDataGridView.Rows[e.RowIndex].Cells["usernameDataGridViewTextBoxColumn"].Value = string.Empty;
+            secretsDataGridView.Rows[e.RowIndex].Cells["passwordDataGridViewTextBoxColumn"].Value = string.Empty;
+            secretsDataGridView.Rows[e.RowIndex].Cells["notesDataGridViewTextBoxColumn"].Value = string.Empty;
+        }
+        else if (e.ColumnIndex == secretsDataGridView.Columns["DeleteButton"].Index)
+        {
+            // Delete the secret from the database
+            var row = secretsDataGridView.Rows[e.RowIndex];
+            var secretId = (int?)row.Cells["idDataGridViewTextBoxColumn"].Value;
+            if (secretId.HasValue)
+            {
+                var secretsDb = new SecretsDb(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
+                await secretsDb.DeleteSecretAsync(secretId.Value);
+                
+                // Refresh grid
+                Secrets = [.. await secretsDb.GetAllSecretsAsync()];
+                Secrets.Add(new Secret()); // Add a new empty Secret to the list
+                UpdateInfoControls();
+            }
+        }
     }
 
     /// <summary>
-    /// Customizes the painting of cells in the DataGridView, specifically handling the appearance of the "AddButton"
-    /// column.
+    /// Handles the painting of cells in the DataGridView, customizing the appearance of "Add" and "Delete" button
+    /// columns.
     /// </summary>
-    /// <remarks>This method alters the default painting behavior for cells in the "AddButton" column.  If the
-    /// cell is not in edit mode, it paints the background and prevents the default button drawing. If the cell is in
-    /// edit mode, it sets the cell's value to "Save" or "Add" based on the presence of an ID in the first cell of the
-    /// row.</remarks>
+    /// <remarks>This method customizes the painting of cells in the "AddButton" and "DeleteButton" columns of
+    /// the DataGridView. It changes the button text based on the presence of an ID in the first cell of the row and
+    /// prevents the default button drawing when the cell is not in edit mode.</remarks>
     /// <param name="sender">The source of the event, typically the DataGridView.</param>
     /// <param name="e">A <see cref="DataGridViewCellPaintingEventArgs"/> that contains the event data.</param>
     private void secretsDataGridView_CellPainting(object? sender, DataGridViewCellPaintingEventArgs e)
@@ -190,6 +235,7 @@ public partial class MainForm : Form
             return;
 
         bool isAddButtonColumn = secretsDataGridView.Columns[e.ColumnIndex].Name == "AddButton";
+        bool isDeleteButtonColumn = secretsDataGridView.Columns[e.ColumnIndex].Name == "DeleteButton";
         bool hasId = secretsDataGridView.Rows[e.RowIndex].Cells[0].Value != null;
         bool noCellInEdit = secretsDataGridView.CurrentCell == null || secretsDataGridView.CurrentCell.RowIndex != e.RowIndex;
 
@@ -201,6 +247,18 @@ public partial class MainForm : Form
         else if (isAddButtonColumn)
         {
             secretsDataGridView.Rows[e.RowIndex].Cells["AddButton"].Value = hasId ? "Save" : "Add";
+            e.Paint(e.CellBounds, DataGridViewPaintParts.All);
+            e.Handled = true; // Prevents the default button drawing
+        }
+
+        if (isDeleteButtonColumn && noCellInEdit)
+        {
+            e.PaintBackground(e.CellBounds, true);
+            e.Handled = true; // Prevents the default button drawing
+        }
+        else if (isDeleteButtonColumn)
+        {
+            secretsDataGridView.Rows[e.RowIndex].Cells["DeleteButton"].Value = hasId ? "Delete" : "Clear";
             e.Paint(e.CellBounds, DataGridViewPaintParts.All);
             e.Handled = true; // Prevents the default button drawing
         }

@@ -41,6 +41,7 @@
             label4 = new Label();
             txtRecordCount = new TextBox();
             secretsDataGridView = new DataGridView();
+            secretsBindingSource = new BindingSource(components);
             idDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             descriptionDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             usernameDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
@@ -48,7 +49,6 @@
             notesDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             createdOnDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             updatedOnDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            secretsBindingSource = new BindingSource(components);
             ((System.ComponentModel.ISupportInitialize)secretsDataGridView).BeginInit();
             ((System.ComponentModel.ISupportInitialize)secretsBindingSource).BeginInit();
             SuspendLayout();
@@ -133,6 +133,10 @@
             secretsDataGridView.Size = new Size(949, 238);
             secretsDataGridView.TabIndex = 8;
             // 
+            // secretsBindingSource
+            // 
+            secretsBindingSource.DataSource = typeof(Common.Models.Secret);
+            // 
             // idDataGridViewTextBoxColumn
             // 
             idDataGridViewTextBoxColumn.DataPropertyName = "Id";
@@ -141,8 +145,6 @@
             dataGridViewCellStyle1.ForeColor = Color.Black;
             dataGridViewCellStyle1.Format = "N0";
             dataGridViewCellStyle1.NullValue = null;
-            dataGridViewCellStyle1.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle1.SelectionForeColor = Color.Black;
             idDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
             idDataGridViewTextBoxColumn.HeaderText = "Id";
             idDataGridViewTextBoxColumn.Name = "idDataGridViewTextBoxColumn";
@@ -191,8 +193,6 @@
             dataGridViewCellStyle2.ForeColor = Color.Black;
             dataGridViewCellStyle2.Format = "g";
             dataGridViewCellStyle2.NullValue = null;
-            dataGridViewCellStyle2.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle2.SelectionForeColor = Color.Black;
             createdOnDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
             createdOnDataGridViewTextBoxColumn.HeaderText = "CreatedOn";
             createdOnDataGridViewTextBoxColumn.Name = "createdOnDataGridViewTextBoxColumn";
@@ -208,17 +208,11 @@
             dataGridViewCellStyle3.ForeColor = Color.Black;
             dataGridViewCellStyle3.Format = "g";
             dataGridViewCellStyle3.NullValue = null;
-            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle3.SelectionForeColor = Color.Black;
             updatedOnDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
             updatedOnDataGridViewTextBoxColumn.HeaderText = "UpdatedOn";
             updatedOnDataGridViewTextBoxColumn.Name = "updatedOnDataGridViewTextBoxColumn";
             updatedOnDataGridViewTextBoxColumn.ReadOnly = true;
             updatedOnDataGridViewTextBoxColumn.Width = 120;
-            // 
-            // secretsBindingSource
-            // 
-            secretsBindingSource.DataSource = typeof(Common.Models.Secret);
             // 
             // MainForm
             // 
