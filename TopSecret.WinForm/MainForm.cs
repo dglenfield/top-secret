@@ -209,6 +209,10 @@ public partial class MainForm : Form
             var secretId = (int?)row.Cells["idDataGridViewTextBoxColumn"].Value;
             if (secretId.HasValue)
             {
+                if (MessageBox.Show("Are you sure you want to delete this secret?", "Confirm Delete", 
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                    return;
+
                 var secretsDb = new SecretsDb(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
                 await secretsDb.DeleteSecretAsync(secretId.Value);
                 
