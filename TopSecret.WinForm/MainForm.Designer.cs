@@ -32,16 +32,14 @@
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             label1 = new Label();
-            label2 = new Label();
             txtFileLocation = new TextBox();
-            txtFileName = new TextBox();
             txtVersion = new TextBox();
             label3 = new Label();
             label4 = new Label();
             txtRecordCount = new TextBox();
             secretsDataGridView = new DataGridView();
-            secretsBindingSource = new BindingSource(components);
             idDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             descriptionDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             usernameDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
@@ -49,6 +47,8 @@
             notesDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             createdOnDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             updatedOnDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            secretsBindingSource = new BindingSource(components);
+            labelOpenFolder = new Label();
             ((System.ComponentModel.ISupportInitialize)secretsDataGridView).BeginInit();
             ((System.ComponentModel.ISupportInitialize)secretsBindingSource).BeginInit();
             SuspendLayout();
@@ -62,43 +62,26 @@
             label1.TabIndex = 0;
             label1.Text = "Database File Location";
             // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new Point(31, 59);
-            label2.Name = "label2";
-            label2.Size = new Size(111, 15);
-            label2.TabIndex = 1;
-            label2.Text = "Database File Name";
-            // 
             // txtFileLocation
             // 
             txtFileLocation.Location = new Point(148, 18);
             txtFileLocation.Name = "txtFileLocation";
             txtFileLocation.ReadOnly = true;
-            txtFileLocation.Size = new Size(432, 23);
+            txtFileLocation.Size = new Size(625, 23);
             txtFileLocation.TabIndex = 2;
-            // 
-            // txtFileName
-            // 
-            txtFileName.Location = new Point(148, 56);
-            txtFileName.Name = "txtFileName";
-            txtFileName.ReadOnly = true;
-            txtFileName.Size = new Size(235, 23);
-            txtFileName.TabIndex = 3;
             // 
             // txtVersion
             // 
-            txtVersion.Location = new Point(148, 95);
+            txtVersion.Location = new Point(919, 18);
             txtVersion.Name = "txtVersion";
             txtVersion.ReadOnly = true;
-            txtVersion.Size = new Size(100, 23);
+            txtVersion.Size = new Size(47, 23);
             txtVersion.TabIndex = 4;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(46, 98);
+            label3.Location = new Point(817, 21);
             label3.Name = "label3";
             label3.Size = new Size(96, 15);
             label3.TabIndex = 5;
@@ -107,7 +90,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(62, 137);
+            label4.Location = new Point(62, 57);
             label4.Name = "label4";
             label4.Size = new Size(80, 15);
             label4.TabIndex = 6;
@@ -115,7 +98,7 @@
             // 
             // txtRecordCount
             // 
-            txtRecordCount.Location = new Point(148, 134);
+            txtRecordCount.Location = new Point(148, 54);
             txtRecordCount.Name = "txtRecordCount";
             txtRecordCount.ReadOnly = true;
             txtRecordCount.Size = new Size(100, 23);
@@ -128,14 +111,10 @@
             secretsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             secretsDataGridView.Columns.AddRange(new DataGridViewColumn[] { idDataGridViewTextBoxColumn, descriptionDataGridViewTextBoxColumn, usernameDataGridViewTextBoxColumn, passwordDataGridViewTextBoxColumn, notesDataGridViewTextBoxColumn, createdOnDataGridViewTextBoxColumn, updatedOnDataGridViewTextBoxColumn });
             secretsDataGridView.DataSource = secretsBindingSource;
-            secretsDataGridView.Location = new Point(17, 200);
+            secretsDataGridView.Location = new Point(17, 100);
             secretsDataGridView.Name = "secretsDataGridView";
-            secretsDataGridView.Size = new Size(949, 238);
+            secretsDataGridView.Size = new Size(949, 338);
             secretsDataGridView.TabIndex = 8;
-            // 
-            // secretsBindingSource
-            // 
-            secretsBindingSource.DataSource = typeof(Common.Models.Secret);
             // 
             // idDataGridViewTextBoxColumn
             // 
@@ -214,19 +193,31 @@
             updatedOnDataGridViewTextBoxColumn.ReadOnly = true;
             updatedOnDataGridViewTextBoxColumn.Width = 120;
             // 
+            // secretsBindingSource
+            // 
+            secretsBindingSource.DataSource = typeof(Common.Models.Secret);
+            // 
+            // labelOpenFolder
+            // 
+            labelOpenFolder.Cursor = Cursors.Hand;
+            labelOpenFolder.Image = (Image)resources.GetObject("labelOpenFolder.Image");
+            labelOpenFolder.Location = new Point(779, 15);
+            labelOpenFolder.Name = "labelOpenFolder";
+            labelOpenFolder.Size = new Size(26, 26);
+            labelOpenFolder.TabIndex = 9;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(978, 450);
+            Controls.Add(labelOpenFolder);
             Controls.Add(secretsDataGridView);
             Controls.Add(txtRecordCount);
             Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(txtVersion);
-            Controls.Add(txtFileName);
             Controls.Add(txtFileLocation);
-            Controls.Add(label2);
             Controls.Add(label1);
             Name = "MainForm";
             Text = "Top Secret";
@@ -239,9 +230,7 @@
         #endregion
 
         private Label label1;
-        private Label label2;
         private TextBox txtFileLocation;
-        private TextBox txtFileName;
         private TextBox txtVersion;
         private Label label3;
         private Label label4;
@@ -255,5 +244,6 @@
         private DataGridViewTextBoxColumn notesDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn createdOnDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn updatedOnDataGridViewTextBoxColumn;
+        private Label labelOpenFolder;
     }
 }

@@ -16,6 +16,7 @@ public partial class MainForm : Form
     {
         InitializeComponent();
 
+        labelOpenFolder.Click += labelOpenFolder_Click;
         secretsDataGridView.AllowUserToAddRows = false;
         secretsDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         secretsDataGridView.MultiSelect = false;
@@ -33,8 +34,14 @@ public partial class MainForm : Form
     public void UpdateInfoControls()
     {
         this.Text = Settings?.DatabaseFileName != null ? $"Top Secret - {Settings.DatabaseFileName}" : "Top Secret";
-        txtFileLocation.Text = Settings?.DatabaseFileLocation ?? string.Empty;
-        txtFileName.Text = Settings?.DatabaseFileName ?? string.Empty;
+        if (!string.IsNullOrEmpty(Settings?.DatabaseFileLocation) && !string.IsNullOrEmpty(Settings?.DatabaseFileName))
+        {
+            txtFileLocation.Text = Path.Combine(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
+        }
+        else
+        {
+            txtFileLocation.Text = string.Empty;
+        }
         txtVersion.Text = DatabaseInfo?.Version.ToString() ?? string.Empty;
         txtRecordCount.Text = Secrets.Count(s => s.Id != null).ToString();
 
@@ -127,6 +134,33 @@ public partial class MainForm : Form
         // Set the current cell to the new row for editing
         secretsDataGridView.Focus();
         secretsDataGridView.CurrentCell = secretsDataGridView.Rows[0].Cells[0];
+    }
+
+    /// <summary>
+    /// Handles the click event for the label to open the folder containing the database file.
+    /// </summary>
+    /// <remarks>This method attempts to open the folder specified by the <see
+    /// cref="Settings.DatabaseFileLocation"/> property. If the location is not set, the method exits without performing
+    /// any action. An error message is displayed if the folder cannot be opened.</remarks>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The event data.</param>
+    private void labelOpenFolder_Click(object? sender, EventArgs e)
+    {
+        if (Settings?.DatabaseFileLocation == null)
+            return;
+
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = Settings.DatabaseFileLocation,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error opening folder: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 
     /// <summary>
