@@ -38,7 +38,7 @@ if (loadedSettings == null)
     return;
 }
 
-SecretsDb secretsDb = new(loadedSettings.DatabaseFileLocation, loadedSettings.DatabaseFileName);
+SecretsDataProvider secretsDb = new(loadedSettings.DatabaseFileLocation, loadedSettings.DatabaseFileName);
 WriteInfo($"TopSecret database file: {secretsDb.FullDatabaseFilePath}");
 
 try

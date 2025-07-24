@@ -65,7 +65,7 @@ public partial class SetupForm : Form
         }
 
         // Create the database
-        SecretsDb secretsDb = new(settings.DatabaseFileLocation, settings.DatabaseFileName);
+        SecretsDataProvider secretsDb = new(settings.DatabaseFileLocation, settings.DatabaseFileName);
         try
         {
             secretsDb.CreateAsync().ContinueWith(createTask =>

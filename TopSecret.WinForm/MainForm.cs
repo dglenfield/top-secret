@@ -109,7 +109,7 @@ public partial class MainForm : Form
         if (Settings == null)
             return;
 
-        SecretsDb secretsDb = new(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
+        SecretsDataProvider secretsDb = new(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
         try
         {
             DatabaseInfo = await secretsDb.GetDatabaseInfoAsync();
@@ -161,7 +161,7 @@ public partial class MainForm : Form
                 Notes = row.Cells["notesDataGridViewTextBoxColumn"].Value?.ToString()
             };
 
-            var secretsDb = new SecretsDb(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
+            var secretsDb = new SecretsDataProvider(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
             await secretsDb.InsertSecretAsync(secret);
 
             // Refresh grid
@@ -185,7 +185,7 @@ public partial class MainForm : Form
                 Notes = row.Cells["notesDataGridViewTextBoxColumn"].Value?.ToString()
             };
 
-            var secretsDb = new SecretsDb(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
+            var secretsDb = new SecretsDataProvider(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
             await secretsDb.UpdateSecretAsync(secret);
 
             // Refresh grid
@@ -213,7 +213,7 @@ public partial class MainForm : Form
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                     return;
 
-                var secretsDb = new SecretsDb(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
+                var secretsDb = new SecretsDataProvider(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
                 await secretsDb.DeleteSecretAsync(secretId.Value);
                 
                 // Refresh grid

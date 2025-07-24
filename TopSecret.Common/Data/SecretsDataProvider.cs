@@ -4,7 +4,7 @@ using TopSecret.Common.Models;
 
 namespace TopSecret.Common.Data;
 
-public class SecretsDb
+public class SecretsDataProvider
 {
     public readonly string DatabaseFileLocation;
     public readonly string DatabaseFileName;
@@ -16,14 +16,14 @@ public class SecretsDb
     private readonly FileLogger _logger;
     
     /// <summary>
-    /// Initializes a new instance of the <see cref="SecretsDb"/> class with the specified database file location and
+    /// Initializes a new instance of the <see cref="SecretsDataProvider"/> class with the specified database file location and
     /// name.
     /// </summary>
     /// <remarks>The constructor sets up the database connection string and initializes a logger for the
     /// database operations. Ensure that the provided file location and name are valid and accessible.</remarks>
     /// <param name="databaseFileLocation">The directory path where the database file is located. This value cannot be null or empty.</param>
     /// <param name="databaseFileName">The name of the database file, including its extension. This value cannot be null or empty.</param>
-    public SecretsDb(string databaseFileLocation, string databaseFileName)
+    public SecretsDataProvider(string databaseFileLocation, string databaseFileName)
     {
         DatabaseFileLocation = databaseFileLocation;
         DatabaseFileName = databaseFileName;
