@@ -23,6 +23,8 @@ public partial class MainForm : Form
         secretsDataGridView.CellPainting += secretsDataGridView_CellPainting;
         secretsDataGridView.RowEnter += secretsDataGridView_RowEnter;
         secretsDataGridView.CellClick += secretsDataGridView_CellClick;
+
+        toolTipOpenFolder.SetToolTip(labelOpenFolder, "Open the folder containing the database file");
     }
 
     /// <summary>

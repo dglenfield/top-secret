@@ -49,6 +49,7 @@
             updatedOnDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             secretsBindingSource = new BindingSource(components);
             labelOpenFolder = new Label();
+            toolTipOpenFolder = new ToolTip(components);
             ((System.ComponentModel.ISupportInitialize)secretsDataGridView).BeginInit();
             ((System.ComponentModel.ISupportInitialize)secretsBindingSource).BeginInit();
             SuspendLayout();
@@ -245,5 +246,6 @@
         private DataGridViewTextBoxColumn createdOnDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn updatedOnDataGridViewTextBoxColumn;
         private Label labelOpenFolder;
+        private ToolTip toolTipOpenFolder;
     }
 }
