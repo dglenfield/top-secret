@@ -32,11 +32,6 @@
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            label1 = new Label();
-            txtFileLocation = new TextBox();
-            txtVersion = new TextBox();
-            label3 = new Label();
             label4 = new Label();
             txtRecordCount = new TextBox();
             secretsDataGridView = new DataGridView();
@@ -48,54 +43,19 @@
             createdOnDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             updatedOnDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             secretsBindingSource = new BindingSource(components);
-            labelOpenFolder = new Label();
-            toolTipOpenFolder = new ToolTip(components);
             menuStrip1 = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
+            settingsToolStripMenuItem = new ToolStripMenuItem();
             exitToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)secretsDataGridView).BeginInit();
             ((System.ComponentModel.ISupportInitialize)secretsBindingSource).BeginInit();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(17, 35);
-            label1.Name = "label1";
-            label1.Size = new Size(125, 15);
-            label1.TabIndex = 0;
-            label1.Text = "Database File Location";
-            // 
-            // txtFileLocation
-            // 
-            txtFileLocation.Location = new Point(148, 32);
-            txtFileLocation.Name = "txtFileLocation";
-            txtFileLocation.ReadOnly = true;
-            txtFileLocation.Size = new Size(625, 23);
-            txtFileLocation.TabIndex = 2;
-            // 
-            // txtVersion
-            // 
-            txtVersion.Location = new Point(919, 32);
-            txtVersion.Name = "txtVersion";
-            txtVersion.ReadOnly = true;
-            txtVersion.Size = new Size(47, 23);
-            txtVersion.TabIndex = 4;
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Location = new Point(817, 35);
-            label3.Name = "label3";
-            label3.Size = new Size(96, 15);
-            label3.TabIndex = 5;
-            label3.Text = "Database Version";
-            // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(62, 71);
+            label4.Location = new Point(17, 39);
             label4.Name = "label4";
             label4.Size = new Size(80, 15);
             label4.TabIndex = 6;
@@ -103,7 +63,7 @@
             // 
             // txtRecordCount
             // 
-            txtRecordCount.Location = new Point(148, 68);
+            txtRecordCount.Location = new Point(103, 36);
             txtRecordCount.Name = "txtRecordCount";
             txtRecordCount.ReadOnly = true;
             txtRecordCount.Size = new Size(100, 23);
@@ -116,9 +76,9 @@
             secretsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             secretsDataGridView.Columns.AddRange(new DataGridViewColumn[] { idDataGridViewTextBoxColumn, descriptionDataGridViewTextBoxColumn, usernameDataGridViewTextBoxColumn, passwordDataGridViewTextBoxColumn, notesDataGridViewTextBoxColumn, createdOnDataGridViewTextBoxColumn, updatedOnDataGridViewTextBoxColumn });
             secretsDataGridView.DataSource = secretsBindingSource;
-            secretsDataGridView.Location = new Point(17, 112);
+            secretsDataGridView.Location = new Point(17, 76);
             secretsDataGridView.Name = "secretsDataGridView";
-            secretsDataGridView.Size = new Size(949, 372);
+            secretsDataGridView.Size = new Size(949, 408);
             secretsDataGridView.TabIndex = 8;
             // 
             // idDataGridViewTextBoxColumn
@@ -202,15 +162,6 @@
             // 
             secretsBindingSource.DataSource = typeof(Common.Models.Secret);
             // 
-            // labelOpenFolder
-            // 
-            labelOpenFolder.Cursor = Cursors.Hand;
-            labelOpenFolder.Image = (Image)resources.GetObject("labelOpenFolder.Image");
-            labelOpenFolder.Location = new Point(779, 29);
-            labelOpenFolder.Name = "labelOpenFolder";
-            labelOpenFolder.Size = new Size(26, 26);
-            labelOpenFolder.TabIndex = 9;
-            // 
             // menuStrip1
             // 
             menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem });
@@ -222,15 +173,21 @@
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { exitToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { settingsToolStripMenuItem, exitToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(37, 20);
             fileToolStripMenuItem.Text = "File";
             // 
+            // settingsToolStripMenuItem
+            // 
+            settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            settingsToolStripMenuItem.Size = new Size(125, 22);
+            settingsToolStripMenuItem.Text = "Settings...";
+            // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(180, 22);
+            exitToolStripMenuItem.Size = new Size(125, 22);
             exitToolStripMenuItem.Text = "Exit";
             // 
             // MainForm
@@ -238,14 +195,9 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(978, 496);
-            Controls.Add(labelOpenFolder);
             Controls.Add(secretsDataGridView);
             Controls.Add(txtRecordCount);
             Controls.Add(label4);
-            Controls.Add(label3);
-            Controls.Add(txtVersion);
-            Controls.Add(txtFileLocation);
-            Controls.Add(label1);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "MainForm";
@@ -259,11 +211,6 @@
         }
 
         #endregion
-
-        private Label label1;
-        private TextBox txtFileLocation;
-        private TextBox txtVersion;
-        private Label label3;
         private Label label4;
         private TextBox txtRecordCount;
         private DataGridView secretsDataGridView;
@@ -275,10 +222,9 @@
         private DataGridViewTextBoxColumn notesDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn createdOnDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn updatedOnDataGridViewTextBoxColumn;
-        private Label labelOpenFolder;
-        private ToolTip toolTipOpenFolder;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem exitToolStripMenuItem;
+        private ToolStripMenuItem settingsToolStripMenuItem;
     }
 }

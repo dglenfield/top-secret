@@ -20,33 +20,21 @@ public partial class MainForm : Form
         secretsDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         secretsDataGridView.MultiSelect = false;
 
-        toolTipOpenFolder.SetToolTip(labelOpenFolder, "Open the folder containing the database file");
-
         exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
-        labelOpenFolder.Click += labelOpenFolder_Click;
+        settingsToolStripMenuItem.Click += settingsToolStripMenuItem_Click;
         secretsDataGridView.CellPainting += secretsDataGridView_CellPainting;
         secretsDataGridView.RowEnter += secretsDataGridView_RowEnter;
         secretsDataGridView.CellClick += secretsDataGridView_CellClick;
     }
 
     /// <summary>
-    /// Updates the information controls with the current settings and database information.
+    /// Updates the user interface with the current data from the settings and secrets.
     /// </summary>
-    /// <remarks>This method sets the text of various UI controls to reflect the current state of the
-    /// application settings and database information. It updates the file location, file name, version, and record
-    /// count fields, and binds the secrets data to the data grid view.</remarks>
-    public void UpdateInfoControls()
+    /// <remarks>This method refreshes the display text and record count based on the current settings and
+    /// secrets data. It also updates the data source for the secrets data grid view.</remarks>
+    public void RefreshUiWithCurrentData()
     {
         this.Text = Settings?.DatabaseFileName != null ? $"Top Secret - {Settings.DatabaseFileName}" : "Top Secret";
-        if (!string.IsNullOrEmpty(Settings?.DatabaseFileLocation) && !string.IsNullOrEmpty(Settings?.DatabaseFileName))
-        {
-            txtFileLocation.Text = Path.Combine(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
-        }
-        else
-        {
-            txtFileLocation.Text = string.Empty;
-        }
-        txtVersion.Text = DatabaseInfo?.Version.ToString() ?? string.Empty;
         txtRecordCount.Text = Secrets.Count(s => s.Id != null).ToString();
 
         secretsBindingSource.DataSource = Secrets;
@@ -127,7 +115,7 @@ public partial class MainForm : Form
             Secrets = [.. await secretsDb.GetAllSecretsAsync()];
             Secrets.Add(new Secret()); // Add a new empty Secret to the list
 
-            UpdateInfoControls();
+            RefreshUiWithCurrentData();
         }
         catch (Exception ex)
         {
@@ -148,33 +136,6 @@ public partial class MainForm : Form
     private void exitToolStripMenuItem_Click(object? sender, EventArgs e)
     {
         Application.Exit(); // Exits the application gracefully regardless of open forms
-    }
-
-    /// <summary>
-    /// Handles the click event for the label to open the folder containing the database file.
-    /// </summary>
-    /// <remarks>This method attempts to open the folder specified by the <see
-    /// cref="Settings.DatabaseFileLocation"/> property. If the location is not set, the method exits without performing
-    /// any action. An error message is displayed if the folder cannot be opened.</remarks>
-    /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The event data.</param>
-    private void labelOpenFolder_Click(object? sender, EventArgs e)
-    {
-        if (Settings?.DatabaseFileLocation == null)
-            return;
-
-        try
-        {
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-            {
-                FileName = Settings.DatabaseFileLocation,
-                UseShellExecute = true
-            });
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Error opening folder: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
     }
 
     /// <summary>
@@ -215,7 +176,7 @@ public partial class MainForm : Form
             // Refresh grid
             Secrets = [.. await secretsDb.GetAllSecretsAsync()];
             Secrets.Add(new Secret()); // Add a new empty Secret to the list
-            UpdateInfoControls();
+            RefreshUiWithCurrentData();
 
             // Set the current cell to the new row for editing
             secretsDataGridView.CurrentCell = secretsDataGridView.Rows[secretsDataGridView.Rows.Count - 1].Cells[1];
@@ -239,7 +200,7 @@ public partial class MainForm : Form
             // Refresh grid
             Secrets = [.. await secretsDb.GetAllSecretsAsync()];
             Secrets.Add(new Secret()); // Add a new empty Secret to the list
-            UpdateInfoControls();
+            RefreshUiWithCurrentData();
         }
 
         if (e.ColumnIndex == secretsDataGridView.Columns["DeleteButton"].Index && 
@@ -267,7 +228,7 @@ public partial class MainForm : Form
                 // Refresh grid
                 Secrets = [.. await secretsDb.GetAllSecretsAsync()];
                 Secrets.Add(new Secret()); // Add a new empty Secret to the list
-                UpdateInfoControls();
+                RefreshUiWithCurrentData();
             }
         }
     }
@@ -326,5 +287,20 @@ public partial class MainForm : Form
     private void secretsDataGridView_RowEnter(object? sender, DataGridViewCellEventArgs e)
     {
         secretsDataGridView.Invalidate(); // Force a repaint to update the button appearance
+    }
+
+    /// <summary>
+    /// Opens the settings dialog for the application.
+    /// </summary>
+    /// <param name="sender">The source of the event, typically the settings menu item.</param>
+    /// <param name="e">The event data associated with the click event.</param>
+    private void settingsToolStripMenuItem_Click(object? sender, EventArgs e)
+    {
+        SettingsForm settingsForm = new()
+        {
+            Settings = Settings,
+            DatabaseInfo = DatabaseInfo
+        };
+        settingsForm.ShowDialog(this);
     }
 }

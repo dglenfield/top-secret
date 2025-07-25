@@ -99,7 +99,7 @@ public partial class SetupForm : Form
             }
             
             mainForm.Settings = settings;
-            mainForm.UpdateInfoControls();
+            mainForm.RefreshUiWithCurrentData();
         }
 
         this.Close();
