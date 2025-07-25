@@ -10,6 +10,9 @@ public partial class SetupForm : Form
         InitializeComponent();
 
         txtFolderPath.Text = AppContext.BaseDirectory;
+
+        btnCreateDatabaseFile.Click += btnCreateDatabaseFile_Click;
+        btnExit.Click += (s, e) => Application.Exit();
     }
 
     /// <summary>
@@ -22,7 +25,7 @@ public partial class SetupForm : Form
     /// database information and secrets.</remarks>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-    private void btnCreateDatabaseFile_Click(object sender, EventArgs e)
+    private async void btnCreateDatabaseFile_Click(object? sender, EventArgs e)
     {
         if (string.IsNullOrWhiteSpace(txtFileName.Text))
         {
@@ -49,7 +52,7 @@ public partial class SetupForm : Form
         string settingsPath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
         try
         {
-            settings.SaveAsync(settingsPath).ContinueWith(task =>
+            await settings.SaveAsync(settingsPath).ContinueWith(task =>
             {
                 if (task.IsFaulted)
                 {
@@ -68,7 +71,7 @@ public partial class SetupForm : Form
         SecretsDataProvider secretsDb = new(settings.DatabaseFileLocation, settings.DatabaseFileName);
         try
         {
-            secretsDb.CreateAsync().ContinueWith(createTask =>
+            await secretsDb.CreateAsync().ContinueWith(createTask =>
             {
                 if (createTask.IsFaulted)
                 {

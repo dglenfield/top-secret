@@ -34,12 +34,12 @@
             label2 = new Label();
             txtFileName = new TextBox();
             btnCreateDatabaseFile = new Button();
-            label3 = new Label();
+            btnExit = new Button();
             SuspendLayout();
             // 
             // btnSelectFolder
             // 
-            btnSelectFolder.Location = new Point(19, 85);
+            btnSelectFolder.Location = new Point(531, 48);
             btnSelectFolder.Name = "btnSelectFolder";
             btnSelectFolder.Size = new Size(91, 23);
             btnSelectFolder.TabIndex = 0;
@@ -49,7 +49,7 @@
             // 
             // txtFolderPath
             // 
-            txtFolderPath.Location = new Point(116, 86);
+            txtFolderPath.Location = new Point(12, 45);
             txtFolderPath.Name = "txtFolderPath";
             txtFolderPath.ReadOnly = true;
             txtFolderPath.Size = new Size(513, 23);
@@ -58,7 +58,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(19, 61);
+            label1.Location = new Point(12, 18);
             label1.Name = "label1";
             label1.Size = new Size(125, 15);
             label1.TabIndex = 2;
@@ -67,7 +67,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(22, 126);
+            label2.Location = new Point(12, 80);
             label2.Name = "label2";
             label2.Size = new Size(111, 15);
             label2.TabIndex = 3;
@@ -75,7 +75,7 @@
             // 
             // txtFileName
             // 
-            txtFileName.Location = new Point(22, 154);
+            txtFileName.Location = new Point(12, 107);
             txtFileName.Name = "txtFileName";
             txtFileName.Size = new Size(210, 23);
             txtFileName.TabIndex = 4;
@@ -83,31 +83,29 @@
             // 
             // btnCreateDatabaseFile
             // 
-            btnCreateDatabaseFile.Location = new Point(25, 203);
+            btnCreateDatabaseFile.Location = new Point(12, 155);
             btnCreateDatabaseFile.Name = "btnCreateDatabaseFile";
             btnCreateDatabaseFile.Size = new Size(75, 23);
             btnCreateDatabaseFile.TabIndex = 5;
             btnCreateDatabaseFile.Text = "Create";
             btnCreateDatabaseFile.UseVisualStyleBackColor = true;
-            btnCreateDatabaseFile.Click += btnCreateDatabaseFile_Click;
             // 
-            // label3
+            // btnExit
             // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
-            label3.Location = new Point(12, 9);
-            label3.Name = "label3";
-            label3.Size = new Size(73, 30);
-            label3.TabIndex = 6;
-            label3.Text = "Setup";
+            btnExit.Location = new Point(147, 155);
+            btnExit.Name = "btnExit";
+            btnExit.Size = new Size(75, 23);
+            btnExit.TabIndex = 7;
+            btnExit.Text = "Exit";
+            btnExit.UseVisualStyleBackColor = true;
             // 
             // SetupForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(670, 450);
+            ClientSize = new Size(634, 197);
             ControlBox = false;
-            Controls.Add(label3);
+            Controls.Add(btnExit);
             Controls.Add(btnCreateDatabaseFile);
             Controls.Add(txtFileName);
             Controls.Add(label2);
@@ -118,7 +116,7 @@
             MinimizeBox = false;
             Name = "SetupForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Top Secret";
+            Text = "Top Secret Setup";
             ResumeLayout(false);
             PerformLayout();
         }
@@ -131,6 +129,6 @@
         private Label label2;
         private TextBox txtFileName;
         private Button btnCreateDatabaseFile;
-        private Label label3;
+        private Button btnExit;
     }
 }
