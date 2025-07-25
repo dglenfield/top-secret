@@ -16,15 +16,17 @@ public partial class MainForm : Form
     {
         InitializeComponent();
 
-        labelOpenFolder.Click += labelOpenFolder_Click;
         secretsDataGridView.AllowUserToAddRows = false;
         secretsDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         secretsDataGridView.MultiSelect = false;
+
+        toolTipOpenFolder.SetToolTip(labelOpenFolder, "Open the folder containing the database file");
+
+        exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
+        labelOpenFolder.Click += labelOpenFolder_Click;
         secretsDataGridView.CellPainting += secretsDataGridView_CellPainting;
         secretsDataGridView.RowEnter += secretsDataGridView_RowEnter;
         secretsDataGridView.CellClick += secretsDataGridView_CellClick;
-
-        toolTipOpenFolder.SetToolTip(labelOpenFolder, "Open the folder containing the database file");
     }
 
     /// <summary>
@@ -136,6 +138,16 @@ public partial class MainForm : Form
         // Set the current cell to the new row for editing
         secretsDataGridView.Focus();
         secretsDataGridView.CurrentCell = secretsDataGridView.Rows[0].Cells[0];
+    }
+
+    /// <summary>
+    /// Handles the Click event of the Exit menu item, terminating the application.
+    /// </summary>
+    /// <param name="sender">The source of the event, typically the Exit menu item.</param>
+    /// <param name="e">The event data associated with the Click event.</param>
+    private void exitToolStripMenuItem_Click(object? sender, EventArgs e)
+    {
+        Application.Exit(); // Exits the application gracefully regardless of open forms
     }
 
     /// <summary>

@@ -50,14 +50,18 @@
             secretsBindingSource = new BindingSource(components);
             labelOpenFolder = new Label();
             toolTipOpenFolder = new ToolTip(components);
+            menuStrip1 = new MenuStrip();
+            fileToolStripMenuItem = new ToolStripMenuItem();
+            exitToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)secretsDataGridView).BeginInit();
             ((System.ComponentModel.ISupportInitialize)secretsBindingSource).BeginInit();
+            menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(17, 21);
+            label1.Location = new Point(17, 35);
             label1.Name = "label1";
             label1.Size = new Size(125, 15);
             label1.TabIndex = 0;
@@ -65,7 +69,7 @@
             // 
             // txtFileLocation
             // 
-            txtFileLocation.Location = new Point(148, 18);
+            txtFileLocation.Location = new Point(148, 32);
             txtFileLocation.Name = "txtFileLocation";
             txtFileLocation.ReadOnly = true;
             txtFileLocation.Size = new Size(625, 23);
@@ -73,7 +77,7 @@
             // 
             // txtVersion
             // 
-            txtVersion.Location = new Point(919, 18);
+            txtVersion.Location = new Point(919, 32);
             txtVersion.Name = "txtVersion";
             txtVersion.ReadOnly = true;
             txtVersion.Size = new Size(47, 23);
@@ -82,7 +86,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(817, 21);
+            label3.Location = new Point(817, 35);
             label3.Name = "label3";
             label3.Size = new Size(96, 15);
             label3.TabIndex = 5;
@@ -91,7 +95,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(62, 57);
+            label4.Location = new Point(62, 71);
             label4.Name = "label4";
             label4.Size = new Size(80, 15);
             label4.TabIndex = 6;
@@ -99,7 +103,7 @@
             // 
             // txtRecordCount
             // 
-            txtRecordCount.Location = new Point(148, 54);
+            txtRecordCount.Location = new Point(148, 68);
             txtRecordCount.Name = "txtRecordCount";
             txtRecordCount.ReadOnly = true;
             txtRecordCount.Size = new Size(100, 23);
@@ -112,9 +116,9 @@
             secretsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             secretsDataGridView.Columns.AddRange(new DataGridViewColumn[] { idDataGridViewTextBoxColumn, descriptionDataGridViewTextBoxColumn, usernameDataGridViewTextBoxColumn, passwordDataGridViewTextBoxColumn, notesDataGridViewTextBoxColumn, createdOnDataGridViewTextBoxColumn, updatedOnDataGridViewTextBoxColumn });
             secretsDataGridView.DataSource = secretsBindingSource;
-            secretsDataGridView.Location = new Point(17, 100);
+            secretsDataGridView.Location = new Point(17, 112);
             secretsDataGridView.Name = "secretsDataGridView";
-            secretsDataGridView.Size = new Size(949, 338);
+            secretsDataGridView.Size = new Size(949, 372);
             secretsDataGridView.TabIndex = 8;
             // 
             // idDataGridViewTextBoxColumn
@@ -202,16 +206,38 @@
             // 
             labelOpenFolder.Cursor = Cursors.Hand;
             labelOpenFolder.Image = (Image)resources.GetObject("labelOpenFolder.Image");
-            labelOpenFolder.Location = new Point(779, 15);
+            labelOpenFolder.Location = new Point(779, 29);
             labelOpenFolder.Name = "labelOpenFolder";
             labelOpenFolder.Size = new Size(26, 26);
             labelOpenFolder.TabIndex = 9;
+            // 
+            // menuStrip1
+            // 
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem });
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new Size(978, 24);
+            menuStrip1.TabIndex = 10;
+            menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { exitToolStripMenuItem });
+            fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            fileToolStripMenuItem.Size = new Size(37, 20);
+            fileToolStripMenuItem.Text = "File";
+            // 
+            // exitToolStripMenuItem
+            // 
+            exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            exitToolStripMenuItem.Size = new Size(180, 22);
+            exitToolStripMenuItem.Text = "Exit";
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(978, 450);
+            ClientSize = new Size(978, 496);
             Controls.Add(labelOpenFolder);
             Controls.Add(secretsDataGridView);
             Controls.Add(txtRecordCount);
@@ -220,10 +246,14 @@
             Controls.Add(txtVersion);
             Controls.Add(txtFileLocation);
             Controls.Add(label1);
+            Controls.Add(menuStrip1);
+            MainMenuStrip = menuStrip1;
             Name = "MainForm";
             Text = "Top Secret";
             ((System.ComponentModel.ISupportInitialize)secretsDataGridView).EndInit();
             ((System.ComponentModel.ISupportInitialize)secretsBindingSource).EndInit();
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -247,5 +277,8 @@
         private DataGridViewTextBoxColumn updatedOnDataGridViewTextBoxColumn;
         private Label labelOpenFolder;
         private ToolTip toolTipOpenFolder;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem fileToolStripMenuItem;
+        private ToolStripMenuItem exitToolStripMenuItem;
     }
 }
