@@ -125,7 +125,7 @@ public partial class MainForm : Form
 
         // Set the current cell to the new row for editing
         secretsDataGridView.Focus();
-        secretsDataGridView.CurrentCell = secretsDataGridView.Rows[0].Cells[0];
+        secretsDataGridView.CurrentCell = secretsDataGridView.Rows[0].Cells["descriptionColumn"];
     }
 
     /// <summary>
@@ -158,16 +158,16 @@ public partial class MainForm : Form
             return;
 
         if (e.ColumnIndex == secretsDataGridView.Columns["AddButton"].Index &&
-            secretsDataGridView.Rows[e.RowIndex].Cells[0].Value == null)
+            secretsDataGridView.Rows[e.RowIndex].Cells["idColumn"].Value == null)
         {
             // Insert a new secret into the database
             var row = secretsDataGridView.Rows[e.RowIndex];
             var secret = new Secret
             {
-                Username = row.Cells["usernameDataGridViewTextBoxColumn"].Value?.ToString(),
-                Password = row.Cells["passwordDataGridViewTextBoxColumn"].Value?.ToString(),
-                Description = row.Cells["descriptionDataGridViewTextBoxColumn"].Value?.ToString(),
-                Notes = row.Cells["notesDataGridViewTextBoxColumn"].Value?.ToString()
+                Username = row.Cells["usernameColumn"].Value?.ToString(),
+                Password = row.Cells["passwordColumn"].Value?.ToString(),
+                Description = row.Cells["descriptionColumn"].Value?.ToString(),
+                Notes = row.Cells["notesColumn"].Value?.ToString()
             };
 
             var secretsDb = new SecretsDataProvider(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
@@ -179,7 +179,7 @@ public partial class MainForm : Form
             RefreshUiWithCurrentData();
 
             // Set the current cell to the new row for editing
-            secretsDataGridView.CurrentCell = secretsDataGridView.Rows[secretsDataGridView.Rows.Count - 1].Cells[1];
+            secretsDataGridView.CurrentCell = secretsDataGridView.Rows[secretsDataGridView.Rows.Count - 1].Cells["descriptionColumn"];
         }
         else if (e.ColumnIndex == secretsDataGridView.Columns["AddButton"].Index)
         {
@@ -187,11 +187,11 @@ public partial class MainForm : Form
             var row = secretsDataGridView.Rows[e.RowIndex];
             var secret = new Secret
             {
-                Id = (int?)row.Cells["idDataGridViewTextBoxColumn"].Value,
-                Username = row.Cells["usernameDataGridViewTextBoxColumn"].Value?.ToString(),
-                Password = row.Cells["passwordDataGridViewTextBoxColumn"].Value?.ToString(),
-                Description = row.Cells["descriptionDataGridViewTextBoxColumn"].Value?.ToString(),
-                Notes = row.Cells["notesDataGridViewTextBoxColumn"].Value?.ToString()
+                Id = (int?)row.Cells["idColumn"].Value,
+                Username = row.Cells["usernameColumn"].Value?.ToString(),
+                Password = row.Cells["passwordColumn"].Value?.ToString(),
+                Description = row.Cells["descriptionColumn"].Value?.ToString(),
+                Notes = row.Cells["notesColumn"].Value?.ToString()
             };
 
             var secretsDb = new SecretsDataProvider(Settings.DatabaseFileLocation, Settings.DatabaseFileName);
@@ -204,18 +204,18 @@ public partial class MainForm : Form
         }
 
         if (e.ColumnIndex == secretsDataGridView.Columns["DeleteButton"].Index && 
-            secretsDataGridView.Rows[e.RowIndex].Cells[0].Value == null)
+            secretsDataGridView.Rows[e.RowIndex].Cells["idColumn"].Value == null)
         {
-            secretsDataGridView.Rows[e.RowIndex].Cells["descriptionDataGridViewTextBoxColumn"].Value = string.Empty;
-            secretsDataGridView.Rows[e.RowIndex].Cells["usernameDataGridViewTextBoxColumn"].Value = string.Empty;
-            secretsDataGridView.Rows[e.RowIndex].Cells["passwordDataGridViewTextBoxColumn"].Value = string.Empty;
-            secretsDataGridView.Rows[e.RowIndex].Cells["notesDataGridViewTextBoxColumn"].Value = string.Empty;
+            secretsDataGridView.Rows[e.RowIndex].Cells["descriptionColumn"].Value = string.Empty;
+            secretsDataGridView.Rows[e.RowIndex].Cells["usernameColumn"].Value = string.Empty;
+            secretsDataGridView.Rows[e.RowIndex].Cells["passwordColumn"].Value = string.Empty;
+            secretsDataGridView.Rows[e.RowIndex].Cells["notesColumn"].Value = string.Empty;
         }
         else if (e.ColumnIndex == secretsDataGridView.Columns["DeleteButton"].Index)
         {
             // Delete the secret from the database
             var row = secretsDataGridView.Rows[e.RowIndex];
-            var secretId = (int?)row.Cells["idDataGridViewTextBoxColumn"].Value;
+            var secretId = (int?)row.Cells["idColumn"].Value;
             if (secretId.HasValue)
             {
                 if (MessageBox.Show("Are you sure you want to delete this secret?", "Confirm Delete", 
@@ -249,7 +249,7 @@ public partial class MainForm : Form
 
         bool isAddButtonColumn = secretsDataGridView.Columns[e.ColumnIndex].Name == "AddButton";
         bool isDeleteButtonColumn = secretsDataGridView.Columns[e.ColumnIndex].Name == "DeleteButton";
-        bool hasId = secretsDataGridView.Rows[e.RowIndex].Cells[0].Value != null;
+        bool hasId = secretsDataGridView.Rows[e.RowIndex].Cells["idColumn"].Value != null;
         bool noCellInEdit = secretsDataGridView.CurrentCell == null || secretsDataGridView.CurrentCell.RowIndex != e.RowIndex;
 
         if (isAddButtonColumn && noCellInEdit)
